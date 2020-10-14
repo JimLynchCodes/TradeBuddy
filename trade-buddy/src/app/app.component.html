@@ -13,14 +13,40 @@
 
   <span class="p-3">{{connectedToText}}</span>
 
-  <button type="button" class="btn btn-success btn-sm"
-    tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
-    Get Auth Code
-  </button>
+  <a
+    href="https://auth.tdameritrade.com/oauth?client_id=ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ%40AMER.OAUTHAP&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4200&lang=en-us">
+    <button type="button" class="btn btn-success btn-sm"
+      tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
+      Get Auth Code
+    </button>
+  </a>
 
 </div>
 
 <div class="content" role="main">
+
+  <div class="text-align-left w-100 mb-2">
+
+    <p>
+      First, get an auth code by using the secure login from the green button above. ^
+      <br />
+      <br />
+      Then use the code to get an access_token from here: <a
+        href="https://developer.tdameritrade.com/authentication/apis/post/token-0">https://developer.tdameritrade.com/authentication/apis/post/token-0</a>
+      <br />
+      <br />
+      Enter the <a href="https://meyerweb.com/eric/tools/dencoder/">"url decoded"</a> version of the code into the td
+      form.
+      <br />
+      <br />
+      <i>Note: the code is only good for a single use!</i>
+      <br />
+      <br />
+      FOOESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ@AMER.OAUTHAP
+      <br />
+      <br />
+    </p>
+  </div>
 
   <!-- Connect Account Section -->
 
@@ -47,22 +73,66 @@
         <h5 class="card-title">Bot Settings</h5>
         <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
 
-        <div class="column px-4">
-
-          <p class="card-text">Bot Autonomy</p>
+        <div class="column px-1">
 
           <!-- Bot Autonomy -->
-          <div class="row d-flex pl-4">
 
-            <div class="form-check p-2 flex-grow-1">
-              <input type="radio" class="form-check-input" id="botAutonomyRequireApproval" name="botAutonomyRadio" checked>
-              <label class="form-check-label" for="botAutonomyRequireApprovalRadio">Require Approval</label>
+          <div class=" p-2 m-1 border border-white rounded">
+            <h5 class="card-text pl-2">Bot Autonomy</h5>
+
+            <div class="row d-flex pl-5">
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="radio" class="form-check-input" id="botAutonomyRequireApproval" name="botAutonomyRadio"
+                  checked>
+                <label class="form-check-label" for="botAutonomyRequireApprovalRadio">Require Approval</label>
+              </div>
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="radio" class="form-check-input" id="botAutonomyAutotrade" name="botAutonomyRadio">
+                <label class="form-check-label" for="botAutonomyAutotradeRadio">Autotrade</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Algos To Use -->
+
+          <div class=" p-2 m-1 border border-white rounded">
+
+            <h5 class="card-text pl-2">Algos To Use</h5>
+
+            <div class="row d-flex pl-5 col">
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="checkbox" class="form-check-input" id="tripleGainersCheckbox" name="tripleGainersCheckbox"
+                  checked>
+                <label class="form-check-label" for="tripleGainersCheckbox">Triple Gainers Rating</label>
+              </div>
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="checkbox" class="form-check-input" id="dailyVolumeCheckbox" name="dailyVolumeCheckbox"
+                  checked>
+                <label class="form-check-label" for="dailyVolumeCheckbox">Daily Volume Spikes</label>
+              </div>
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="checkbox" class="form-check-input" id="morningVolumeSpikes" name="morningVolumeSpikes"
+                  checked>
+                <label class="form-check-label" for="morningVolumeSpikes">Morning Volume Spikes</label>
+              </div>
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="checkbox" class="form-check-input" id="dailyVolumeSpikes" name="dailyVolumeSpikes" checked>
+                <label class="form-check-label" for="dailyVolumeSpikes">Put Putter 3000</label>
+              </div>
+
             </div>
 
-            <div class="form-check p-2 flex-grow-1">
-              <input type="radio" class="form-check-input" id="botAutonomyAutotrade" name="botAutonomyRadio">
-              <label class="form-check-label" for="botAutonomyAutotradeRadio">Autotrade</label>
-            </div>
+            <button type="button" class="btn btn-success btn-md"
+              tooltip="Currently does nothing but will eventually allow users to upload their own algos which scan various stats and generate bot suggestions.">
+              Add Custom Algo
+            </button>
+
           </div>
 
           <!-- Bet Sizing -->
@@ -80,18 +150,17 @@
           </div> -->
 
         </div>
-        <a href="#" class="card-link">Card link</a>
-        <a href="#" class="card-link">Another link</a>
+
       </div>
     </div>
 
-    <div class="card border border-primary rounded w-100 h-auto text-dark flex-grow-1">
-      <div class="card-body p-1">
+    <div class="card border border-primary rounded w-100 h-auto text-dark flex-column">
+      <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end">
         <h6 class="card-title">Portfolio Value</h6>
         <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
         <h4 class="card-title">Cash: $1,004.24</h4>
         <h4 class="card-title">Assets: $60,561.30</h4>
-        <hr class="border-primary"/>
+        <hr class="border-primary" />
         <h3 class="card-title">Total: $61,565.54</h3>
 
 

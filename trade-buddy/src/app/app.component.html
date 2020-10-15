@@ -1,7 +1,12 @@
 <!-- Toolbar -->
 <div class="toolbar pr-4" role="banner">
-  <img width="40" alt="Angular Logo"
-    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==" />
+
+  <h2 class="px-3">
+    😎
+  </h2>
+
+  <!-- <img width="40" alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==" /> -->
   <span>Trade Buddy</span>
   <div class="spacer"></div>
   <!-- <a aria-label="Angular on twitter" target="_blank" rel="noopener" href="https://twitter.com/angular" title="Twitter">
@@ -31,18 +36,21 @@
       First, get an auth code by using the secure login from the green button above. ^
       <br />
       <br />
-      Then use the code to get an access_token from here: <a
-        href="https://developer.tdameritrade.com/authentication/apis/post/token-0">https://developer.tdameritrade.com/authentication/apis/post/token-0</a>
-      <br />
-      <br />
       Enter the <a href="https://meyerweb.com/eric/tools/dencoder/">"url decoded"</a> version of the code into the td
       form.
+      <br />
+      <br />
+      Then use the code to get an access_token from the 200 in the text input below.<a
+        href="https://developer.tdameritrade.com/authentication/apis/post/token-0">https://developer.tdameritrade.com/authentication/apis/post/token-0</a>
       <br />
       <br />
       <i>Note: the code is only good for a single use!</i>
       <br />
       <br />
-      FOOESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ@AMER.OAUTHAP
+      ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ@AMER.OAUTHAP
+      <br />
+      <br />
+      http://localhost:4200
       <br />
       <br />
     </p>
@@ -52,12 +60,13 @@
 
   <div class="input-group mb-3">
     <div class="input-group-prepend">
-      <span class="input-group-text" id="basic-addon3">Auth Code</span>
+      <span class="input-group-text" id="basic-addon3">access_token</span>
     </div>
 
-    <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3">
+    <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3"
+      [(ngModel)]="access_token" (keyup.enter)="connectWithAccessTokenClick()">
 
-    <button type="button" class="btn btn-success btn-sm"
+    <button type="button" class="btn btn-success btn-sm" (click)="connectWithAccessTokenClick()"
       tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
       Connect TD Account
     </button>
@@ -155,13 +164,15 @@
     </div>
 
     <div class="card border border-primary rounded w-100 h-auto text-dark flex-column">
-      <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end">
+      <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end w-100 text-center">
         <h6 class="card-title">Portfolio Value</h6>
         <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-        <h4 class="card-title">Cash: $1,004.24</h4>
-        <h4 class="card-title">Assets: $60,561.30</h4>
-        <hr class="border-primary" />
-        <h3 class="card-title">Total: $61,565.54</h3>
+        <h5 class="card-title">Cash Balance: {{portfolioTotalCash}}</h5>
+        <h5 class="card-title">Long Assets Value: {{portfolioLongAssetsValue}}</h5>
+        <h5 class="card-title">Long Options Value: {{portfolioLongOptionsValue}}</h5>
+        <h5 class="card-title">Short Options Value: {{portfolioShortOptionsValue}}</h5>
+        <hr class="bg-dark w-100 rounded" />
+        <h4 class="card-title">Total: {{portfolioTotalValue}}</h4>
 
 
       </div>
@@ -177,17 +188,12 @@
 
       <h2 class="text-center pb-2">Positions</h2>
 
-      <ul>
+      <div *ngFor="let position of currentPositions; index as i;" class="m-1 my-2 p-2 border border-primary rounded">
 
-        <li>
-          Aapl - $7,003 (20 shares)
-        </li>
+        <span class="px-2">{{i+1}})</span>
+        {{position.longQuantity}} shares of {{position.instrument.symbol}} - market value: ${{position.marketValue}}
 
-        <li>
-          MSFT - $20,003 (70 shares)
-        </li>
-
-      </ul>
+      </div>
 
     </div>
 
@@ -197,43 +203,40 @@
 
   <div class="flex p-1 my-2 border border-primary rounded w-100">
 
-    <h2 class="text-center mb-4 mt-4 pt-2">Active Orders</h2>
+    <h2 class="text-center mb-2 mt-4 pt-2">Active Orders</h2>
 
     <div class="row flex justify-content-around">
 
       <div class="flex-grow-1">
 
-        <h3 class="text-center py-1"><u>Postion-Opening</u></h3>
+        <h3 class="text-center py-1"><u>BUY</u></h3>
 
-        <ul>
+        <div *ngFor="let order of currentOrders; index as i;" class="m-1 my-2 p-2 border border-primary rounded">
 
-          <li>
-            Aapl - $7,003 (20 shares)
-          </li>
+          <span class="px-2">{{i+1}})</span>
 
-          <li>
-            MSFT - $20,003 (70 shares)
-          </li>
+          <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
 
-        </ul>
+            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+          </ng-container>
+
+        </div>
 
       </div>
 
       <div class="flex-grow-1">
 
-        <h3 class="text-center py-1"><u>Postion-Closing</u></h3>
+        <h3 class="text-center py-1"><u>SELL</u></h3>
 
-        <ul>
+        <div *ngFor="let order of currentOrders; index as i;" class="m-1 my-2 border border-primary rounded">
 
-          <li>
-            Aapl - $7,003 (20 shares)
-          </li>
+          <div class="p-1" *ngIf="order.orderLegCollection[0].instruction === 'SELL'">
 
-          <li>
-            MSFT - $20,003 (70 shares)
-          </li>
-
-        </ul>
+            <span class="px-2">{{i+1}})</span>
+            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+          </div>
+            
+        </div>
 
       </div>
 
@@ -245,43 +248,27 @@
 
   <div class="flex p-1 my-2 border border-primary rounded w-100">
 
-    <h2 class="text-center mb-4 mt-4 pt-2">Suggested Trades</h2>
+    <h2 class="text-center mb-2 mt-4 pt-2">Suggested Trades</h2>
 
     <div class="row flex justify-content-around">
 
       <div class="flex-grow-1">
 
-        <h3 class="text-center py-1"><u>Postion-Opening</u></h3>
+        <h3 class="text-center py-1"><u>BUY</u></h3>
 
-        <ul>
-
-          <li>
-            Aapl - $7,003 (20 shares)
-          </li>
-
-          <li>
-            MSFT - $20,003 (70 shares)
-          </li>
-
-        </ul>
-
+        <br/>
+        <br/>
+        
       </div>
 
       <div class="flex-grow-1">
 
-        <h3 class="text-center py-1"><u>Postion-Closing</u></h3>
+        <h3 class="text-center py-1"><u>SELL</u></h3>
 
-        <ul>
-
-          <li>
-            Aapl - $7,003 (20 shares)
-          </li>
-
-          <li>
-            MSFT - $20,003 (70 shares)
-          </li>
-
-        </ul>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
       </div>
 

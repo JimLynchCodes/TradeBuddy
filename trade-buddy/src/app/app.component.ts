@@ -1,6 +1,42 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+const fakeBuyOrder1 = {
+  quantity: 1,
+  price: 2,
+  orderLegCollection: [{
+    instruction: 'BUY',
+    instrument: {
+      symbol: 'MSFT'
+    }
+  }],
+  reasons: [{
+    text: 'spike up in volume',
+  },
+  {
+    text: 'just picked up a great new CTO'
+  },
+  {
+    text: 'price has been steadily climbing'
+  },
+  {
+    text: 'triple gainers list 10/14/2020 with 80% buy recc'
+  }
+]
+
+}
+
+const fakeSellOrder1 = {
+  quantity: 1,
+  price: 1000,
+  orderLegCollection: [{
+    instruction: 'SELL',
+    instrument: {
+      symbol: 'TSLA'
+    }
+  }]
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,6 +46,9 @@ export class AppComponent {
   accountNumber: string;
   currentPositions: any[];
   currentOrders: any;
+
+  suggestedBuyOrders:any = []
+  suggestedSellOrders:any = []
 
   constructor(private http: HttpClient) { }
 
@@ -25,6 +64,23 @@ export class AppComponent {
   portfolioLongOptionsValue = '-'
   portfolioShortOptionsValue = '-'
   portfolioTotalValue = '-'
+
+  ngOnInit() {
+    console.log('init app');
+
+    this.suggestedBuyOrders.push(fakeBuyOrder1)
+    this.suggestedBuyOrders.push(fakeBuyOrder1)
+    this.suggestedBuyOrders.push(fakeBuyOrder1)
+    this.suggestedSellOrders.push(fakeSellOrder1)
+    
+    
+    // const minTime = 3200
+    
+    // setInterval(() => {
+    //   this.suggestedBuyOrders.push(fakeBuyOrder1)
+    // }, minTime)
+
+  }
 
   connectWithAccessTokenClick() {
 
@@ -58,7 +114,7 @@ export class AppComponent {
       this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
 
       // sort by market value
-      this.currentPositions = data[0].securitiesAccount.positions.sort( (a, b) => +b.marketValue - +a.marketValue)
+      this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
 
     }, err => {
       console.log('err: ', err)
@@ -82,7 +138,7 @@ export class AppComponent {
 
   private hideFullStringWithAsertisks(input: string): string {
 
-    return input.substr(0,1) + '*****' +input.substr(input.length - 3, 3)
+    return input.substr(0, 1) + '*****' + input.substr(input.length - 3, 3)
   }
 
 }

@@ -104,6 +104,38 @@
             </div>
           </div>
 
+          <!-- Bot Autonomy -->
+
+          <div class=" p-2 m-1 border border-white rounded">
+            <h5 class="card-text pl-2">Gains-Locker™</h5>
+            <span data-toggle='tooltip' title='<%= @your_tooltip_content %>'>?</span>
+
+            <span class="glyphicon glyphicon-phone" > </span>
+
+
+            <div class="row d-flex pl-5">
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="radio" class="form-check-input" id="gainslockerDontLockGains" name="gainslockerRadio"
+                  checked>
+                <label class="form-check-label" for="gainslockerDontLockGains">Dont Lock Gains</label>
+              </div>
+
+              <div class="form-check p-2 flex-grow-1">
+                <input type="radio" class="form-check-input" id="gainslockerLockGainsAt" name="gainslockerRadio">
+                <label class="form-check-label" for="gainslockerLockGainsAtRadio">Lock gains at:</label>
+
+                <select class="selectpicker rounded ml-2">
+                  <option>2%</option>
+                  <option>3%</option>
+                  <option>4%</option>
+                  <option>5%</option>
+                </select>
+                
+              </div>
+            </div>
+          </div>
+
           <!-- Algos To Use -->
 
           <div class=" p-2 m-1 border border-white rounded">
@@ -256,23 +288,48 @@
 
         <h3 class="text-center py-1"><u>BUY</u></h3>
 
-        <br/>
-        <br/>
-        
+        <div *ngFor="let order of suggestedBuyOrders; index as i;" class="m-1 my-2 p-2 border order-white bg-primary text-white rounded">
+
+          <span class="px-2">{{i+1}})</span>
+
+          <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
+            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+          
+            <ul>
+
+              <div *ngFor="let reason of order.reasons">
+
+                <li >
+                  {{reason.text}}
+                </li>
+              </div>
+            </ul>
+          
+          </ng-container>
+
+        </div>
+
       </div>
 
       <div class="flex-grow-1">
 
         <h3 class="text-center py-1"><u>SELL</u></h3>
 
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <div *ngFor="let order of suggestedSellOrders; index as i;" class="m-1 my-2 border border-primary rounded">
+
+          <div class="p-1" *ngIf="order.orderLegCollection[0].instruction === 'SELL'">
+
+            <span class="px-2">{{i+1}})</span>
+            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+          </div>
+            
+        </div>
 
       </div>
 
     </div>
+
+  </div>
 
   </div>
 

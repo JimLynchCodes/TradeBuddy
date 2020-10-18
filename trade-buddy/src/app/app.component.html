@@ -18,8 +18,7 @@
 
   <span class="p-3">{{connectedToText}}</span>
 
-  <a
-    href="https://auth.tdameritrade.com/oauth?client_id=ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ%40AMER.OAUTHAP&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4200&lang=en-us">
+  <a href="https://auth.tdameritrade.com/oauth?client_id=ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ%40AMER.OAUTHAP&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4200&lang=en-us">
     <button type="button" class="btn btn-success btn-sm"
       tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
       Get Auth Code
@@ -28,314 +27,50 @@
 
 </div>
 
-<div class="content" role="main">
 
-  <div class="text-align-left w-100 mb-2">
+<!-- Footer -->
+<div class="mt-4 mb-3 text-center">
+  Trade Buddy © 2020
+</div>
 
-    <p>
-      First, get an auth code by using the secure login from the green button above. ^
-      <br />
-      <br />
-      Enter the <a href="https://meyerweb.com/eric/tools/dencoder/">"url decoded"</a> version of the code into the td
-      form.
-      <br />
-      <br />
-      Then use the code to get an access_token from the 200 in the text input below.<a
-        href="https://developer.tdameritrade.com/authentication/apis/post/token-0">https://developer.tdameritrade.com/authentication/apis/post/token-0</a>
-      <br />
-      <br />
-      <i>Note: the code is only good for a single use!</i>
-      <br />
-      <br />
-      ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ@AMER.OAUTHAP
-      <br />
-      <br />
-      http://localhost:4200
-      <br />
-      <br />
-    </p>
-  </div>
 
-  <!-- Connect Account Section -->
+<div *ngFor="let toast of toasts" style=" position: fixed; bottom: 0.5em; margin-left: 1em;">
+  <alert [type]="toast.type" dismissible="toast.dismissible" [dismissOnTimeout]="toast.timeout"
+    (onClosed)="onClosed(toast)">{{ toast.msg }}
+    <br />
+    <button type="undo" class="btn btn-secondary btn-sm mt-2" (click)="undoClicked()">Undo</button>
+  </alert>
+</div>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="basic-addon3">access_token</span>
+<!-- <div *ngFor="let alert of alerts">
+  <alert [type]="alert.type" dismissible="alert.dismissible" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}</alert>
+</div> -->
+<!-- <button type="button" class="btn btn-primary" (click)="add()">Toast Example</button> -->
+
+
+<router-outlet></router-outlet>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+<app-footer-nav></app-footer-nav>
+
+<!-- Toast For Undo -->
+
+<!-- <div #undoToast aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+  <div #undi class="toast" style="position: absolute; top: 0; right: 0;">
+    <div class="toast-header">
+      <img src="..." class="rounded mr-2" alt="...">
+      <strong class="mr-auto">Bootstrap</strong>
+      <small>11 mins ago</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-
-    <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3"
-      [(ngModel)]="access_token" (keyup.enter)="connectWithAccessTokenClick()">
-
-    <button type="button" class="btn btn-success btn-sm" (click)="connectWithAccessTokenClick()"
-      tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
-      Connect TD Account
-    </button>
-
-  </div>
-
-  <!-- Bot Settings Section -->
-
-  <div class="flex justify-content-start w-100 row flex-nowrap">
-
-    <div class="card bg-primary w-100 h-auto text-white flex-grow-1">
-      <div class="card-body p-1">
-        <h5 class="card-title">Bot Settings</h5>
-        <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-
-        <div class="column px-1">
-
-          <!-- Bot Autonomy -->
-
-          <div class=" p-2 m-1 border border-white rounded">
-            <h5 class="card-text pl-2">Bot Autonomy</h5>
-
-            <div class="row d-flex pl-5">
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="radio" class="form-check-input" id="botAutonomyRequireApproval" name="botAutonomyRadio"
-                  checked>
-                <label class="form-check-label" for="botAutonomyRequireApprovalRadio">Require Approval</label>
-              </div>
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="radio" class="form-check-input" id="botAutonomyAutotrade" name="botAutonomyRadio">
-                <label class="form-check-label" for="botAutonomyAutotradeRadio">Autotrade</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bot Autonomy -->
-
-          <div class=" p-2 m-1 border border-white rounded">
-            <h5 class="card-text pl-2">Gains-Locker™</h5>
-            <span data-toggle='tooltip' title='<%= @your_tooltip_content %>'>?</span>
-
-            <span class="glyphicon glyphicon-phone" > </span>
-
-
-            <div class="row d-flex pl-5">
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="radio" class="form-check-input" id="gainslockerDontLockGains" name="gainslockerRadio"
-                  checked>
-                <label class="form-check-label" for="gainslockerDontLockGains">Dont Lock Gains</label>
-              </div>
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="radio" class="form-check-input" id="gainslockerLockGainsAt" name="gainslockerRadio">
-                <label class="form-check-label" for="gainslockerLockGainsAtRadio">Lock gains at:</label>
-
-                <select class="selectpicker rounded ml-2">
-                  <option>2%</option>
-                  <option>3%</option>
-                  <option>4%</option>
-                  <option>5%</option>
-                </select>
-                
-              </div>
-            </div>
-          </div>
-
-          <!-- Algos To Use -->
-
-          <div class=" p-2 m-1 border border-white rounded">
-
-            <h5 class="card-text pl-2">Algos To Use</h5>
-
-            <div class="row d-flex pl-5 col">
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="checkbox" class="form-check-input" id="tripleGainersCheckbox" name="tripleGainersCheckbox"
-                  checked>
-                <label class="form-check-label" for="tripleGainersCheckbox">Triple Gainers Rating</label>
-              </div>
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="checkbox" class="form-check-input" id="dailyVolumeCheckbox" name="dailyVolumeCheckbox"
-                  checked>
-                <label class="form-check-label" for="dailyVolumeCheckbox">Daily Volume Spikes</label>
-              </div>
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="checkbox" class="form-check-input" id="morningVolumeSpikes" name="morningVolumeSpikes"
-                  checked>
-                <label class="form-check-label" for="morningVolumeSpikes">Morning Volume Spikes</label>
-              </div>
-
-              <div class="form-check p-2 flex-grow-1">
-                <input type="checkbox" class="form-check-input" id="dailyVolumeSpikes" name="dailyVolumeSpikes" checked>
-                <label class="form-check-label" for="dailyVolumeSpikes">Put Putter 3000</label>
-              </div>
-
-            </div>
-
-            <button type="button" class="btn btn-success btn-md"
-              tooltip="Currently does nothing but will eventually allow users to upload their own algos which scan various stats and generate bot suggestions.">
-              Add Custom Algo
-            </button>
-
-          </div>
-
-          <!-- Bet Sizing -->
-          <!-- <div class="row d-flex pl-4">
-            
-            <div class="form-check p-2 flex-grow-1">
-              <input type="radio" class="form-check-input" id="botAutonomyRequireApproval" name="botAutonomyRequireApprovalRadio" checked>
-              <label class="form-check-label" for="botAutonomyRequireApproval">Require Approval</label>
-            </div>
-            
-            <div class="form-check p-2 flex-grow-1">
-              <input type="radio" class="form-check-input" id="botAutonomyAutotrade" name="botAutonomyAutotradeRadio">
-              <label class="form-check-label" for="botAutonomyAutotrade">Autotrade</label>
-            </div>
-          </div> -->
-
-        </div>
-
-      </div>
+    <div class="toast-body">
+      Hello, world! This is a toast message.
     </div>
-
-    <div class="card border border-primary rounded w-100 h-auto text-dark flex-column">
-      <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end w-100 text-center">
-        <h6 class="card-title">Portfolio Value</h6>
-        <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-        <h5 class="card-title">Cash Balance: {{portfolioTotalCash}}</h5>
-        <h5 class="card-title">Long Assets Value: {{portfolioLongAssetsValue}}</h5>
-        <h5 class="card-title">Long Options Value: {{portfolioLongOptionsValue}}</h5>
-        <h5 class="card-title">Short Options Value: {{portfolioShortOptionsValue}}</h5>
-        <hr class="bg-dark w-100 rounded" />
-        <h4 class="card-title">Total: {{portfolioTotalValue}}</h4>
-
-
-      </div>
-    </div>
-
-
   </div>
-
-  <!-- Positions Section -->
-  <div class="container-fluid row m-1 my-2 border border-primary rounded">
-
-    <div class="col-12 p-2">
-
-      <h2 class="text-center pb-2">Positions</h2>
-
-      <div *ngFor="let position of currentPositions; index as i;" class="m-1 my-2 p-2 border border-primary rounded">
-
-        <span class="px-2">{{i+1}})</span>
-        {{position.longQuantity}} shares of {{position.instrument.symbol}} - market value: ${{position.marketValue}}
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Active Orders sections -->
-
-  <div class="flex p-1 my-2 border border-primary rounded w-100">
-
-    <h2 class="text-center mb-2 mt-4 pt-2">Active Orders</h2>
-
-    <div class="row flex justify-content-around">
-
-      <div class="flex-grow-1">
-
-        <h3 class="text-center py-1"><u>BUY</u></h3>
-
-        <div *ngFor="let order of currentOrders; index as i;" class="m-1 my-2 p-2 border border-primary rounded">
-
-          <span class="px-2">{{i+1}})</span>
-
-          <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
-
-            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
-          </ng-container>
-
-        </div>
-
-      </div>
-
-      <div class="flex-grow-1">
-
-        <h3 class="text-center py-1"><u>SELL</u></h3>
-
-        <div *ngFor="let order of currentOrders; index as i;" class="m-1 my-2 border border-primary rounded">
-
-          <div class="p-1" *ngIf="order.orderLegCollection[0].instruction === 'SELL'">
-
-            <span class="px-2">{{i+1}})</span>
-            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
-          </div>
-            
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Suggested Trades sections -->
-
-  <div class="flex p-1 my-2 border border-primary rounded w-100">
-
-    <h2 class="text-center mb-2 mt-4 pt-2">Suggested Trades</h2>
-
-    <div class="row flex justify-content-around">
-
-      <div class="flex-grow-1">
-
-        <h3 class="text-center py-1"><u>BUY</u></h3>
-
-        <div *ngFor="let order of suggestedBuyOrders; index as i;" class="m-1 my-2 p-2 border order-white bg-primary text-white rounded">
-
-          <span class="px-2">{{i+1}})</span>
-
-          <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
-            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
-          
-            <ul>
-
-              <div *ngFor="let reason of order.reasons">
-
-                <li >
-                  {{reason.text}}
-                </li>
-              </div>
-            </ul>
-          
-          </ng-container>
-
-        </div>
-
-      </div>
-
-      <div class="flex-grow-1">
-
-        <h3 class="text-center py-1"><u>SELL</u></h3>
-
-        <div *ngFor="let order of suggestedSellOrders; index as i;" class="m-1 my-2 border border-primary rounded">
-
-          <div class="p-1" *ngIf="order.orderLegCollection[0].instruction === 'SELL'">
-
-            <span class="px-2">{{i+1}})</span>
-            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
-          </div>
-            
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  </div>
-
-  <!-- Footer -->
-  <div class="mt-4 mb-1">
-    Trade Buddy © 2020
-  </div>
-
-  <!-- <router-outlet></router-outlet> -->
+</div> -->

@@ -1,3 +1,4 @@
+
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
@@ -89,12 +90,12 @@ const fakeSellOrder1 = {
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: 'app-settings-page',
+  templateUrl: './settings-page.component.html',
+  styleUrls: ['./settings-page.component.scss']
 })
+export class SettingsPageComponent {
 
-export class AppComponent {
   accountNumber: string;
   currentPositions: any[];
   currentOrders: any;
@@ -141,7 +142,11 @@ export class AppComponent {
     });
   }
 
-  undoClicked(): void { }
+  undoClicked(): void {
+    console.log('undoing last action...');
+
+
+  }
 
   onClosed(dismissedAlert: AlertComponent): void {
     this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
@@ -154,6 +159,8 @@ export class AppComponent {
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedSellOrders.push(fakeSellOrder1)
+
+    // this.undoToast.show()
 
     const minTime = 10200
 
@@ -169,7 +176,12 @@ export class AppComponent {
 
   }
 
-  ngAfterViewInit() { }
+  ngAfterViewInit() {
+    console.log('toast ', this.undoToast)
+    console.log('toast ', this.undi)
+
+    // this.undoToast.toast.show()
+  }
 
   connectWithAccessTokenClick() {
 

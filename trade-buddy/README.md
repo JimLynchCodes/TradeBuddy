@@ -1,8 +1,8 @@
 # TradeBuddy
-This is a web-app that connects to a TD Ameritrade account and assists day trading by automatically analyzing, entering, and exiting positions.
+The frontend Angular webapp piece of the overall Trade Buddy plaform.
 
 # Contributing
-Please go through the issues and let [Jim]() know if you'd like to pick something up!
+Please go through the issues and let [Jim](https://twitter.com/JimLynchCodes) know if you'd like to pick something up!
 
 ## Development server
 

@@ -1,1 +1,13 @@
-<p>news-feed-page works!</p>
+<div class="flex flex-grow-1">
+
+    <h1 class="text-center m-4 p-2">News Feed</h1>
+
+    <div>
+
+        <app-news-feed-item *ngFor="let fakeNewsItem of hardcodedFakeNewsItems" title="{{fakeNewsItem.title}}"
+            description="{{fakeNewsItem.description}}" [bulletPoints]='fakeNewsItem.bulletPoints'>
+        </app-news-feed-item>
+
+    </div>
+
+</div>

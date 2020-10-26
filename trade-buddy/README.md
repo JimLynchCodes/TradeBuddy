@@ -1,6 +1,8 @@
 # TradeBuddy
+This is a web-app that connects to a TD Ameritrade account and assists day trading by automatically analyzing, entering, and exiting positions.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
+# Contributing
+Please go through the issues and let [Jim]() know if you'd like to pick something up!
 
 ## Development server
 
@@ -21,6 +23,10 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+
+## Scaffolding
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
 
 ## Further help
 

@@ -1,0 +1,13 @@
+<div class="m-4 p-2 border border-primary rounded text-center">
+
+    <h3 class="mt-2 mb-1 mx-1">{{title}}</h3>
+
+    <p class="m-3">{{description}}</p>
+
+    <ul class="text-left m-2">
+        <li *ngFor="let bulletPoint of bulletPoints">
+            <p>{{bulletPoint.text}}</p>
+        </li>
+    </ul>
+
+</div>

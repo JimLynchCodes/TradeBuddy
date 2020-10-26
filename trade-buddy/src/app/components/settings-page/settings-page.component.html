@@ -1,5 +1,5 @@
 
-  <div class="text-align-left w-100 mb-2">
+  <div class="text-align-left flex-grow-1 mb-2 p-4">
 
     <p>
       First, get an auth code by using the secure login from the green button above. ^
@@ -28,14 +28,14 @@
   <!-- Connect Account Section -->
 
   <div class="input-group mb-3">
-    <div class="input-group-prepend">
+    <div class="input-group-prepend ml-4">
       <span class="input-group-text" id="basic-addon3">access_token</span>
     </div>
 
     <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3"
       [(ngModel)]="access_token" (keyup.enter)="connectWithAccessTokenClick()">
 
-    <button type="button" class="btn btn-success btn-sm" (click)="connectWithAccessTokenClick()"
+    <button type="button" class="btn btn-success btn-sm mr-4" (click)="connectWithAccessTokenClick()"
       tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
       Connect TD Account
     </button>
@@ -44,9 +44,9 @@
 
   <!-- Bot Settings Section -->
 
-  <div class="flex justify-content-start w-100 row flex-nowrap">
+  <!-- <div class="flex justify-content-start w-100 row flex-nowrap"> -->
 
-    <div class="card bg-primary w-100 h-auto text-white flex-grow-1">
+    <div class="card bg-primary h-auto text-white flex-grow-1 m-4">
       <div class="card-body p-1">
         <h5 class="card-title">Bot Settings</h5>
         <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
@@ -151,17 +151,17 @@
 
         </div>
 
-      </div>
+      <!-- </div> -->
     </div>
 
-    <div class="card border border-primary rounded w-100 h-auto text-dark flex-column">
-      <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end w-100 text-center">
+    <div class="card border border-primary rounded flex-grow-1 h-auto text-dark flex-column m-4">
+      <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end text-center">
         <h6 class="card-title">Portfolio Value</h6>
         <h5 class="card-title">Cash Balance: {{portfolioTotalCash}}</h5>
         <h5 class="card-title">Long Assets Value: {{portfolioLongAssetsValue}}</h5>
         <h5 class="card-title">Long Options Value: {{portfolioLongOptionsValue}}</h5>
         <h5 class="card-title">Short Options Value: {{portfolioShortOptionsValue}}</h5>
-        <hr class="bg-dark w-100 rounded" />
+        <hr class="bg-dark rounded" />
         <h4 class="card-title">Total: {{portfolioTotalValue}}</h4>
 
 

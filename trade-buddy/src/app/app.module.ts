@@ -16,6 +16,7 @@ import { SettingsPageComponent } from './components/settings-page/settings-page.
 import { FooterNavComponent } from './components/footer-nav/footer-nav.component';
 import { TradeBotPageComponent } from './components/trade-bot-page/trade-bot-page.component';
 import { RouterModule } from '@angular/router';
+import { NewsFeedItemComponent } from './components/news-feed-item/news-feed-item.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { RouterModule } from '@angular/router';
     NewsFeedPageComponent,
     SettingsPageComponent,
     FooterNavComponent,
-    TradeBotPageComponent
+    TradeBotPageComponent,
+    NewsFeedItemComponent
   ],
   imports: [
     BrowserModule,

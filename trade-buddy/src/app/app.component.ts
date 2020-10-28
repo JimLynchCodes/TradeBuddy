@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
+import { TdApiService } from './td-api.service';
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -105,7 +106,7 @@ export class AppComponent {
   @ViewChild('undoToast') undoToast;
   @ViewChild('undoi') undi;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private tdApiSvc: TdApiService) { }
 
   title = 'trade-buddy';
   connectedToText = '[No account connected]';
@@ -120,32 +121,13 @@ export class AppComponent {
   portfolioShortOptionsValue = '-'
   portfolioTotalValue = '-'
 
-  alerts: any[] = [{
-    type: 'success',
-    msg: `Well done! You successfully read this important alert message. (added: ${new Date().toLocaleTimeString()})`,
-    timeout: 5000
-  }];
-
   toasts: any = [{
     type: 'success',
-    msg: `Trade placed! 10 shares of MSFT @ $15.04 each.`,
+    msg: `Foo Trade placed! 10 shares of MSFT @ $15.04 each.`,
     timeout: 5000
   }]
 
-  add(): void {
-    this.alerts.push({
-      type: 'success',
-      msg: `Trade placed! 10 shares of MSFT @ $15.04 each.`,
-      dismissible: true,
-      timeout: 5000,
-    });
-  }
-
   undoClicked(): void { }
-
-  onClosed(dismissedAlert: AlertComponent): void {
-    this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
-  }
 
   ngOnInit() {
     console.log('init app');
@@ -164,7 +146,12 @@ export class AppComponent {
 
     setInterval(() => {
       if (this.suggestedBuyOrders.length < 10)
-        this.toasts.push()
+        this.toasts.push({
+          type: 'success',
+          msg: `Trade placed! ${1} shares of BLAH each.`,
+          dismissible: true,
+          timeout: 5000,
+        })
     }, 5000)
 
   }
@@ -175,55 +162,54 @@ export class AppComponent {
 
     console.log('trying to connect with: ', this.access_token)
 
-    this.callForPortfolioValues()
+    // this.callForPortfolioValues()
 
   }
 
-  private callForPortfolioValues() {
+  // private callForPortfolioValues() {
 
-    const positionEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=positions'
-    const ordersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
+    
+  //   // const ordersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.access_token}`
-    })
+  //   this.tdApiSvc.positions.subscribe(data => {
 
-    this.http.get(positionEndpoint, { headers: headers }).subscribe(data => {
+  //   // this.http.get(positionEndpoint, { headers: headers }).subscribe(
 
-      console.log('got positions data', data)
+  //     console.log('got positions data', data)
 
-      this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
+  //     this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
 
-      this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
-      this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
+  //     this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
+  //     this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
 
-      this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
-      this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
-      this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
+  //     this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
+  //     this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
+  //     this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
 
-      // sort by market value
-      this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+  //     // sort by market value
+  //     this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
 
-    }, err => {
-      console.log('err: ', err)
-    }, () => {
-      console.log('completed: ')
-    })
+  //   }, err => {
+  //     console.log('err: ', err)
+  //   }, () => {
+  //     console.log('completed: ')
+  //   })
 
-    this.http.get(ordersEndpoint, { headers: headers }).subscribe(data => {
+  //   // this.http.get(ordersEndpoint, { headers: headers }).subscribe(data => {
 
-      console.log('got orders data', data)
+  //   //   console.log('got orders data', data)
 
-      this.currentOrders = data[0].securitiesAccount.orderStrategies
+  //   //   this.currentOrders = data[0].securitiesAccount.orderStrategies
 
-    }, err => {
-      console.log('err: ', err)
-    }, () => {
-      console.log('completed: ')
-    })
+  //   // }, err => {
+  //   //   console.log('err: ', err)
+  //   // }, () => {
+  //   //   console.log('completed: ')
+  //   // })
 
-  }
+  //   this.tdApiSvc.refreshPositions()
+
+  // }
 
   private hideFullStringWithAsertisks(input: string): string {
 
@@ -244,16 +230,22 @@ export class AppComponent {
     console.log('trade Sugg is: ', tradeSuggestionObject)
   }
   
+  onClosed(dismissedAlert: AlertComponent): void {
+    console.log('closed: ', dismissedAlert)
+  }
+
   placeTradeSuggestionClick(order, index) {
     
+    console.log(order)
+
     console.log(`sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
 
     this.toasts.push({
       type: 'success',
-      msg: `Trade placed! ${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} @ $${order.price} each.`,
+      msg: `Trade placed! ${1} shares of BLAH each.`,
       dismissible: true,
       timeout: 5000,
-    });
+    })
 
     let tradeSuggestionObject
     

@@ -1,7 +1,6 @@
 # TradeBuddy
 The frontend Angular webapp piece of the overall Trade Buddy plaform.
 
-
 ## Pages
 There are 3 core pages of trade buddy: Settings, Trade Bot, and News Feed.
 

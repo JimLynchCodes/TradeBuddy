@@ -33,29 +33,17 @@
   Trade Buddy © 2020
 </div>
 
-
-<div *ngFor="let toast of toasts" style=" position: fixed; bottom: 0.5em; margin-left: 1em;">
-  <alert [type]="toast.type" dismissible="toast.dismissible" [dismissOnTimeout]="toast.timeout"
-    (onClosed)="onClosed(toast)">{{ toast.msg }}
-    <br />
-    <button type="undo" class="btn btn-secondary btn-sm mt-2" (click)="undoClicked()">Undo</button>
-  </alert>
-</div>
-
-<!-- <div *ngFor="let alert of alerts">
-  <alert [type]="alert.type" dismissible="alert.dismissible" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}</alert>
-</div> -->
-<!-- <button type="button" class="btn btn-primary" (click)="add()">Toast Example</button> -->
-
+<app-toasts-container></app-toasts-container>
 
 <router-outlet></router-outlet>
 
+<app-footer-nav></app-footer-nav>
+
 <br/>
 <br/>
 <br/>
 <br/>
 
-<app-footer-nav></app-footer-nav>
 
 <!-- Toast For Undo -->
 

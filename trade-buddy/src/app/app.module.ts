@@ -17,6 +17,7 @@ import { FooterNavComponent } from './components/footer-nav/footer-nav.component
 import { TradeBotPageComponent } from './components/trade-bot-page/trade-bot-page.component';
 import { RouterModule } from '@angular/router';
 import { NewsFeedItemComponent } from './components/news-feed-item/news-feed-item.component';
+import { ToastsContainerComponent } from './toasts-container/toasts-container.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { NewsFeedItemComponent } from './components/news-feed-item/news-feed-ite
     SettingsPageComponent,
     FooterNavComponent,
     TradeBotPageComponent,
-    NewsFeedItemComponent
+    NewsFeedItemComponent,
+    ToastsContainerComponent
   ],
   imports: [
     BrowserModule,

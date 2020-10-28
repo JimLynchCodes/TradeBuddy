@@ -2,6 +2,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
+import { OrdersService } from 'src/app/orders.service';
+import { TdApiService } from 'src/app/td-api.service';
+import { ToastManagerService } from 'src/app/toast-manager.service';
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -106,7 +109,7 @@ export class TradeBotPageComponent {
   @ViewChild('undoToast') undoToast;
   @ViewChild('undoi') undi;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private ordersService: OrdersService, private tdApiSvc: TdApiService, private toastSvc: ToastManagerService) { }
 
   title = 'trade-buddy';
   connectedToText = '[No account connected]';
@@ -133,19 +136,8 @@ export class TradeBotPageComponent {
     timeout: 5000
   }]
 
-  add(): void {
-    this.alerts.push({
-      type: 'success',
-      msg: `Trade placed! 10 shares of MSFT @ $15.04 each.`,
-      dismissible: true,
-      timeout: 5000,
-    });
-  }
-
   undoClicked(): void {
     console.log('undoing last action...');
-
-
   }
 
   onClosed(dismissedAlert: AlertComponent): void {
@@ -193,15 +185,9 @@ export class TradeBotPageComponent {
 
   private callForPortfolioValues() {
 
-    const positionEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=positions'
-    const ordersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
+    this.tdApiSvc.positions.subscribe(data => {
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.access_token}`
-    })
-
-    this.http.get(positionEndpoint, { headers: headers }).subscribe(data => {
+    // this.http.get(positionEndpoint, { headers: headers }).subscribe(
 
       console.log('got positions data', data)
 
@@ -223,7 +209,7 @@ export class TradeBotPageComponent {
       console.log('completed: ')
     })
 
-    this.http.get(ordersEndpoint, { headers: headers }).subscribe(data => {
+    this.tdApiSvc.positions.subscribe(data => {
 
       console.log('got orders data', data)
 
@@ -234,6 +220,9 @@ export class TradeBotPageComponent {
     }, () => {
       console.log('completed: ')
     })
+
+    this.tdApiSvc.refreshPositions()
+    this.tdApiSvc.refreshOrders()
 
   }
 
@@ -256,16 +245,20 @@ export class TradeBotPageComponent {
     console.log('trade Sugg is: ', tradeSuggestionObject)
   }
   
-  placeTradeSuggestionClick(order, index) {
+  async placeTradeSuggestionClick(order, index) {
     
-    console.log(`sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
+    console.log(`order ${JSON.stringify(order)} trade for`)
+    console.log(`Now, sd sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
 
-    this.toasts.push({
-      type: 'success',
-      msg: `Trade placed! ${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} @ $${order.price} each.`,
-      dismissible: true,
-      timeout: 5000,
-    });
+    await this.ordersService.placeOrder(order)
+
+    this.toastSvc.addToast()
+    // this.toasts.push({
+    //   type: 'success',
+    //   msg: `Bot Trade placed! ${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} @ $${order.price} each.`,
+    //   dismissible: true,
+    //   timeout: 5000,
+    // });
 
     let tradeSuggestionObject
     

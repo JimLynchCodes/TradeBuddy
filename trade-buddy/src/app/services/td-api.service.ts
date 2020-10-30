@@ -20,7 +20,7 @@ interface TokenHolder {
 })
 export class TdApiService {
 
-  positions = new BehaviorSubject(undefined)
+  positions = new BehaviorSubject([])
   orders
 
   accessToken
@@ -30,6 +30,9 @@ export class TdApiService {
 
   constructor(private http: HttpClient) {
     // this.refreshPositions()
+
+    this.accessToken = localStorage.getItem('a_token')
+    this.refreshToken = localStorage.getItem('r_token')
   }
 
   async setCallbackCode(code: string): Promise<void> {
@@ -91,7 +94,7 @@ export class TdApiService {
     })
 
     return new Promise(resolve => {
-      this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe(positions => {
+      this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe((positions: any) => {
 
         console.log('got first positions: ', positions)
 

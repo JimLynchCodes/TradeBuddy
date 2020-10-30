@@ -27,7 +27,7 @@
         <span class="px-2">{{i+1}})</span>
         {{position.longQuantity}} shares of {{position.instrument.symbol}} - market value: ${{position.marketValue}}
 
-        <button (click)="enableGainsLocker()" >
+        <button (click)="enableGainsLockerOnPositionClick(position, index)" >
           GL
         </button>
       </div>

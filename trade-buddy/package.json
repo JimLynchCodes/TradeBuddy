@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "sudo ng serve --ssl true --ssl-key ~/localhost+3-key.pem --ssl-cert ~/localhost+3.pem",
+    "start:no-ssl": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -21,6 +22,7 @@
     "@angular/router": "~10.1.5",
     "bootstrap": "^4.5.2",
     "ngx-bootstrap": "^6.1.0",
+    "ngx-select-ex": "^4.0.0",
     "qs": "^6.9.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

@@ -4,6 +4,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 import { TdApiService } from '../../services/td-api.service';
 import { ToastManagerService } from '../../services/toast-manager.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { EnableGainslockConfirmComponent } from 'src/app/components/modals/enable-gainslock-confirm/enable-gainslock-confirm.component';
+import { ModalService } from 'src/app/components/modals/modal.service';
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -108,7 +111,11 @@ export class TradeBotPageComponent {
   @ViewChild('undoToast') undoToast;
   @ViewChild('undoi') undi;
 
-  constructor(private http: HttpClient, private tdApiSvc: TdApiService, private toastSvc: ToastManagerService) { }
+  constructor(private http: HttpClient,
+    private tdApiSvc: TdApiService,
+    private toastSvc: ToastManagerService,
+    private bsModalService: BsModalService,
+    private modalService: ModalService ) { }
 
   title = 'trade-buddy';
   connectedToText = '[No account connected]';
@@ -170,17 +177,24 @@ export class TradeBotPageComponent {
 
     this.tdApiSvc.positions.subscribe(data => {
 
-      this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
+      if (data.length > 0) {
 
-      this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
-      this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
+        this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
 
-      this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
-      this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
-      this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
+        this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
+        this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
 
-      // sort by market value
-      this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+        this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
+        this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
+        this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
+
+        // sort by market value
+        this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+      } else {
+
+        this.tdApiSvc.refreshPositions()
+
+      }
 
     }, err => {
       console.log('err: ', err)
@@ -267,8 +281,26 @@ export class TradeBotPageComponent {
 
   }
 
-  startEnableGainsLockerMode() {
+  enableGainsLockerOnPositionClick(position, index) {
+    console.log('enabling gains locker for ', position.instrument.symbol)
 
+
+    this.modalService.confirm(
+      position)
+      .subscribe((answer) => {
+        console.log('answer: ', answer)
+        // this.answers.push(answer);
+      });
+
+    // const initialState = {
+    //   title: "Enable GainsLocker For This Position?",
+    //   assetName: position.instrument.symbol,
+    //   sharesOwned: position.longQuantity,
+    //   options: ['cancel', 'Enable GainsLock!'],
+    //   answer: "",
+    // };
+    
+    // this.bsModalService.show(EnableGainslockConfirmComponent, { initialState });
   }
 
   cancelEnableGainsLockerMode() {

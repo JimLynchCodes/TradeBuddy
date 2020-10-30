@@ -18,6 +18,8 @@ import { NewsFeedItemComponent } from './components/news-feed-item/news-feed-ite
 import { ToastsContainerComponent } from './components/toasts-container/toasts-container.component';
 import { LoginCallbackComponent } from './pages/login-callback/login-callback.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { EnableGainslockConfirmComponent } from './components/modals/enable-gainslock-confirm/enable-gainslock-confirm.component';
+import { NgxSelectModule } from 'ngx-select-ex';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     NewsFeedItemComponent,
     ToastsContainerComponent,
     LoginCallbackComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    EnableGainslockConfirmComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     ModalModule.forRoot(),
     FormsModule,
     HttpClientModule,
-    AlertModule.forRoot()
+    AlertModule.forRoot(),
+    NgxSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

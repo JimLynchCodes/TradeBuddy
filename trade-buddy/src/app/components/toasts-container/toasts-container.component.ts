@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
-import { ToastManagerService } from '../toast-manager.service';
+import { ToastManagerService } from '../../services/toast-manager.service';
 
 
 @Component({
@@ -28,6 +28,10 @@ export class ToastsContainerComponent implements OnInit {
       console.log('toasts completed!')
     })
 
+  }
+
+  undoClicked(toast) {
+    console.log('undo clicked for toast! ', toast)
   }
 
 }

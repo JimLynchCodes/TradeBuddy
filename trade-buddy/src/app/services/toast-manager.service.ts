@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { of, BehaviorSubject } from 'rxjs';
-import { AlertComponent } from 'ngx-bootstrap/alert/public_api';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,6 @@ export class ToastManagerService {
   toastStream = new BehaviorSubject(this.toasts)
 
   constructor() { }
-
 
   addHardcodedToastToast() {
     this.toasts.push({

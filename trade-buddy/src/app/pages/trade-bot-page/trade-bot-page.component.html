@@ -1,6 +1,20 @@
 
 <div class="content" role="main">
 
+  <!-- Portfolio Value -->
+
+  <div class="card border border-primary rounded flex-grow-1 h-auto text-dark flex-column m-4">
+    <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end text-center">
+      <h6 class="card-title">Portfolio Value</h6>
+      <h5 class="card-title">Cash Balance: {{portfolioTotalCash}}</h5>
+      <h5 class="card-title">Long Assets Value: {{portfolioLongAssetsValue}}</h5>
+      <h5 class="card-title">Long Options Value: {{portfolioLongOptionsValue}}</h5>
+      <h5 class="card-title">Short Options Value: {{portfolioShortOptionsValue}}</h5>
+      <hr class="bg-dark rounded" />
+      <h4 class="card-title">Total: {{portfolioTotalValue}}</h4>
+    </div>
+  </div>
+
   <!-- Positions Section -->
   <div class="container-fluid row m-1 my-2 border border-primary rounded">
 
@@ -8,11 +22,14 @@
 
       <h2 class="text-center pb-2">Positions</h2>
 
-      <div *ngFor="let position of currentPositions; index as i;" class="m-1 my-2 p-2 border border-primary rounded">
+      <div *ngFor="let position of currentPositions; index as i;" class="m-1 my-2 p-2 border border-primary rounded flex flex-gow-1 flex-row">
 
         <span class="px-2">{{i+1}})</span>
         {{position.longQuantity}} shares of {{position.instrument.symbol}} - market value: ${{position.marketValue}}
 
+        <button (click)="enableGainsLocker()" >
+          GL
+        </button>
       </div>
 
     </div>
@@ -90,7 +107,6 @@
                 </li>
               </div>
             </ul>
-
             
             <div class="flex-grow-1 row justify-content-around">
               <button type="button" class="btn btn-success btn-sm" tooltip=""
@@ -109,6 +125,7 @@
 
       </div>
 
+      <!-- Orders -->
       <div class="d-flex flex-column flex-grow-1 align-items-center">
 
         <h3 class="text-center py-1"><u>SELL</u></h3>

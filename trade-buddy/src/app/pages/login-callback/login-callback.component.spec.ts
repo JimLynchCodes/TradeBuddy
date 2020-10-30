@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoginCallbackComponent } from './login-callback.component';
 
-import { HomeCustomThingComponent } from './home-custom-thing.component';
-
-describe('HomeCustomThingComponent', () => {
-  let component: HomeCustomThingComponent;
-  let fixture: ComponentFixture<HomeCustomThingComponent>;
+describe('LoginCallbackComponent', () => {
+  let component: LoginCallbackComponent;
+  let fixture: ComponentFixture<LoginCallbackComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HomeCustomThingComponent ]
+      declarations: [ LoginCallbackComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeCustomThingComponent);
+    fixture = TestBed.createComponent(LoginCallbackComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

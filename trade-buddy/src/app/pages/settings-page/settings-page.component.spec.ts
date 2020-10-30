@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SettingsPageComponent } from './settings-page.component';
 
-import { HomeCystomThingComponent } from './home-cystom-thing.component';
-
-describe('HomeCystomThingComponent', () => {
-  let component: HomeCystomThingComponent;
-  let fixture: ComponentFixture<HomeCystomThingComponent>;
+describe('SettingsPageComponent', () => {
+  let component: SettingsPageComponent;
+  let fixture: ComponentFixture<SettingsPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HomeCystomThingComponent ]
+      declarations: [ SettingsPageComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeCystomThingComponent);
+    fixture = TestBed.createComponent(SettingsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

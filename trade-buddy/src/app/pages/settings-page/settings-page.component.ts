@@ -75,7 +75,6 @@ const fakeBuyOrder3 = {
     text: 'triple gainers list 10/14/2020 with 80% buy recc'
   }
   ]
-
 }
 
 const fakeSellOrder1 = {
@@ -201,39 +200,39 @@ export class SettingsPageComponent {
       'Authorization': `Bearer ${this.access_token}`
     })
 
-    this.http.get(positionEndpoint, { headers: headers }).subscribe(data => {
+    // this.http.get(positionEndpoint, { headers: headers }).subscribe(data => {
 
-      console.log('got positions data', data)
+    //   console.log('got positions data', data)
 
-      this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
+    //   this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
 
-      this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
-      this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
+    //   this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
+    //   this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
 
-      this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
-      this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
-      this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
+    //   this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
+    //   this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
+    //   this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
 
-      // sort by market value
-      this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+    //   // sort by market value
+    //   this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
 
-    }, err => {
-      console.log('err: ', err)
-    }, () => {
-      console.log('completed: ')
-    })
+    // }, err => {
+    //   console.log('err: ', err)
+    // }, () => {
+    //   console.log('completed: ')
+    // })
 
-    this.http.get(ordersEndpoint, { headers: headers }).subscribe(data => {
+    // this.http.get(ordersEndpoint, { headers: headers }).subscribe(data => {
 
-      console.log('got orders data', data)
+    //   console.log('got orders data', data)
 
-      this.currentOrders = data[0].securitiesAccount.orderStrategies
+    //   this.currentOrders = data[0].securitiesAccount.orderStrategies
 
-    }, err => {
-      console.log('err: ', err)
-    }, () => {
-      console.log('completed: ')
-    })
+    // }, err => {
+    //   console.log('err: ', err)
+    // }, () => {
+    //   console.log('completed: ')
+    // })
 
   }
 
@@ -246,18 +245,18 @@ export class SettingsPageComponent {
     console.log('dismissing trade at index ', index)
 
     let tradeSuggestionObject
-    
+
     if (order.orderLegCollection[0].instruction === 'BUY') {
       tradeSuggestionObject = this.suggestedBuyOrders.splice(index, 1);
     } else {
       tradeSuggestionObject = this.suggestedSellOrders.splice(index, 1);
     }
-    
+
     console.log('trade Sugg is: ', tradeSuggestionObject)
   }
-  
+
   placeTradeSuggestionClick(order, index) {
-    
+
     console.log(`sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
 
     this.toasts.push({
@@ -268,7 +267,7 @@ export class SettingsPageComponent {
     });
 
     let tradeSuggestionObject
-    
+
     console.log(order.instruction)
     if (order.orderLegCollection[0].instruction === 'BUY') {
 

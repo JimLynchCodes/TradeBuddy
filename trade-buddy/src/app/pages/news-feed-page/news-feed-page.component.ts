@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NewsFeedItem } from '../news-feed-item/news-feed-item.model';
+import { NewsFeedItem } from '../../components/news-feed-item/news-feed-item.model';
 
 @Component({
   selector: 'app-news-feed-page',

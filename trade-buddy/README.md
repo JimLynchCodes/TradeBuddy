@@ -30,6 +30,15 @@ Please go through the issues and let [Jim](https://twitter.com/JimLynchCodes) kn
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+### HTTPS mode:
+
+We recommend running the server in https mode (the td-ameritrade apit enforces https callback). To do this, first follow [this guide](https://matthewhoelter.com/2019/10/21/how-to-setup-https-on-your-local-development-environment-localhost-in-minutes.html) to create local "cert" and "key" files. 
+
+Then use this command to run the https server locally:
+```
+sudo ng serve --ssl true --ssl-key ~/localhost+3-key.pem --ssl-cert ~/localhost+3.pem
+``` 
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.

@@ -1,0 +1,159 @@
+<div class="text-align-left flex-grow-1 mb-2 p-4">
+
+  <p>
+    First, get an auth code by using the secure login from the green button above. ^
+    <br />
+    <br />
+    Enter the <a href="https://meyerweb.com/eric/tools/dencoder/">"url decoded"</a> version of the code into the td
+    form.
+    <br />
+    <br />
+    Then use the code to get an access_token from the 200 in the text input below.<a
+      href="https://developer.tdameritrade.com/authentication/apis/post/token-0">https://developer.tdameritrade.com/authentication/apis/post/token-0</a>
+    <br />
+    <br />
+    <i>Note: the code is only good for a single use!</i>
+    <br />
+    <br />
+    ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ@AMER.OAUTHAP
+    <br />
+    <br />
+    https://localhost:4200/login-callback
+    <br />
+    <br />
+  </p>
+</div>
+
+<!-- Connect Account Section -->
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend ml-4">
+    <span class="input-group-text" id="basic-addon3">access_token</span>
+  </div>
+
+  <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3" [(ngModel)]="access_token"
+    (keyup.enter)="connectWithAccessTokenClick()">
+
+  <button type="button" class="btn btn-success btn-sm mr-4" (click)="connectWithAccessTokenClick()"
+    tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
+    Connect TD Account
+  </button>
+
+</div>
+
+<!-- Bot Settings Section -->
+
+<!-- <div class="flex justify-content-start w-100 row flex-nowrap"> -->
+
+<div class="card bg-primary h-auto text-white flex-grow-1 m-4">
+  <div class="card-body p-1">
+    <h5 class="card-title">Bot Settings</h5>
+    <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+
+    <div class="column px-1">
+
+      <!-- Bot Autonomy -->
+
+      <div class=" p-2 m-1 border border-white rounded">
+        <h5 class="card-text pl-2">Bot Autonomy</h5>
+        <p class="pl-2">
+          Should this bot place trades on its own or make suggestions for your approval?
+        </p>
+
+        <div class="row d-flex pl-5">
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="radio" class="form-check-input" id="botAutonomyRequireApproval" name="botAutonomyRadio"
+              checked>
+            <label class="form-check-label" for="botAutonomyRequireApprovalRadio">Require Approval</label>
+          </div>
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="radio" class="form-check-input" id="botAutonomyAutotrade" name="botAutonomyRadio">
+            <label class="form-check-label" for="botAutonomyAutotradeRadio">Autotrade</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bot Autonomy -->
+
+      <div class=" p-2 m-1 border border-white rounded">
+        <h5 class="card-text pl-2">GainsLocker™</h5>
+        <p class="pl-2">Automatic climbing stop-loss after value has increased by chosen percentage.</p>
+        <!-- <span data-toggle='tooltip' title='<%= @your_tooltip_content %>'>?</span> -->
+
+        <span class="glyphicon glyphicon-phone text-white"> </span>
+
+
+        <div class="row d-flex pl-5">
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="radio" class="form-check-input" id="gainslockerDontLockGains" name="gainslockerRadio" checked>
+            <label class="form-check-label" for="gainslockerDontLockGains">Dont Lock Gains</label>
+          </div>
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="radio" class="form-check-input" id="gainslockerLockGainsAt" name="gainslockerRadio">
+            <label class="form-check-label" for="gainslockerLockGainsAtRadio">GainsLock at:</label>
+
+            <select class="selectpicker rounded ml-2">
+              <option>2%</option>
+              <option>3%</option>
+              <option>4%</option>
+              <option>5%</option>
+            </select>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Algos To Use -->
+
+      <div class=" p-2 m-1 border border-white rounded">
+
+        <h5 class="card-text pl-2">Algos To Use</h5>
+
+        <div class="row d-flex pl-5 col">
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="checkbox" class="form-check-input" id="tripleGainersCheckbox" name="tripleGainersCheckbox"
+              checked>
+            <label class="form-check-label" for="tripleGainersCheckbox">Triple Gainers Rating</label>
+          </div>
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="checkbox" class="form-check-input" id="dailyVolumeCheckbox" name="dailyVolumeCheckbox" checked>
+            <label class="form-check-label" for="dailyVolumeCheckbox">Daily Volume Spikes</label>
+          </div>
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="checkbox" class="form-check-input" id="morningVolumeSpikes" name="morningVolumeSpikes" checked>
+            <label class="form-check-label" for="morningVolumeSpikes">Morning Volume Spikes</label>
+          </div>
+
+          <div class="form-check p-2 flex-grow-1">
+            <input type="checkbox" class="form-check-input" id="dailyVolumeSpikes" name="dailyVolumeSpikes" checked>
+            <label class="form-check-label" for="dailyVolumeSpikes">Put Putter 3000</label>
+          </div>
+
+        </div>
+
+        <button type="button" class="btn btn-success btn-md"
+          tooltip="Currently does nothing but will eventually allow users to upload their own algos which scan various stats and generate bot suggestions.">
+          Add Custom Algo
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+</div>

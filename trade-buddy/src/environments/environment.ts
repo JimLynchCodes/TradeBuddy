@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  td_client: 'ESRWAJCTK8NS8D21HNVFXRA42L3XQSV',
+  redirect_uri: 'https://localhost:4200/login-callback'
 };
 
 /*

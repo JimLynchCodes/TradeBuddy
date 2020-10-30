@@ -2,9 +2,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
-import { OrdersService } from 'src/app/orders.service';
-import { TdApiService } from 'src/app/td-api.service';
-import { ToastManagerService } from 'src/app/toast-manager.service';
+import { TdApiService } from '../../services/td-api.service';
+import { ToastManagerService } from '../../services/toast-manager.service';
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -109,7 +108,7 @@ export class TradeBotPageComponent {
   @ViewChild('undoToast') undoToast;
   @ViewChild('undoi') undi;
 
-  constructor(private http: HttpClient, private ordersService: OrdersService, private tdApiSvc: TdApiService, private toastSvc: ToastManagerService) { }
+  constructor(private http: HttpClient, private tdApiSvc: TdApiService, private toastSvc: ToastManagerService) { }
 
   title = 'trade-buddy';
   connectedToText = '[No account connected]';
@@ -166,30 +165,10 @@ export class TradeBotPageComponent {
         this.toasts.push()
     }, 5000)
 
-  }
-
-  ngAfterViewInit() {
     console.log('toast ', this.undoToast)
     console.log('toast ', this.undi)
 
-    // this.undoToast.toast.show()
-  }
-
-  connectWithAccessTokenClick() {
-
-    console.log('trying to connect with: ', this.access_token)
-
-    this.callForPortfolioValues()
-
-  }
-
-  private callForPortfolioValues() {
-
     this.tdApiSvc.positions.subscribe(data => {
-
-    // this.http.get(positionEndpoint, { headers: headers }).subscribe(
-
-      console.log('got positions data', data)
 
       this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
 
@@ -209,20 +188,33 @@ export class TradeBotPageComponent {
       console.log('completed: ')
     })
 
-    this.tdApiSvc.positions.subscribe(data => {
+    // this.tdApiSvc.orders.subscribe(data => {
 
-      console.log('got orders data', data)
+    //   console.log('got orders data', data)
 
-      this.currentOrders = data[0].securitiesAccount.orderStrategies
+    //   this.currentOrders = data[0].securitiesAccount.orderStrategies
 
-    }, err => {
-      console.log('err: ', err)
-    }, () => {
-      console.log('completed: ')
-    })
+    // }, err => {
+    //   console.log('err: ', err)
+    // }, () => {
+    //   console.log('completed: ')
+    // })
 
-    this.tdApiSvc.refreshPositions()
-    this.tdApiSvc.refreshOrders()
+    // this.tdApiSvc.refreshPositions()
+    // this.tdApiSvc.refreshOrders()
+
+    // this.undoToast.toast.show()
+  }
+
+  connectWithAccessTokenClick() {
+
+    console.log('trying to connect with: ', this.access_token)
+
+    this.callForPortfolioValues()
+
+  }
+
+  private callForPortfolioValues() {
 
   }
 
@@ -235,22 +227,22 @@ export class TradeBotPageComponent {
     console.log('dismissing trade at index ', index)
 
     let tradeSuggestionObject
-    
+
     if (order.orderLegCollection[0].instruction === 'BUY') {
       tradeSuggestionObject = this.suggestedBuyOrders.splice(index, 1);
     } else {
       tradeSuggestionObject = this.suggestedSellOrders.splice(index, 1);
     }
-    
+
     console.log('trade Sugg is: ', tradeSuggestionObject)
   }
-  
+
   async placeTradeSuggestionClick(order, index) {
-    
+
     console.log(`order ${JSON.stringify(order)} trade for`)
     console.log(`Now, sd sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
 
-    await this.ordersService.placeOrder(order)
+    // await this.ordersService.placeOrder(order)
 
     this.toastSvc.addToast()
     // this.toasts.push({
@@ -261,7 +253,7 @@ export class TradeBotPageComponent {
     // });
 
     let tradeSuggestionObject
-    
+
     console.log(order.instruction)
     if (order.orderLegCollection[0].instruction === 'BUY') {
 
@@ -272,6 +264,22 @@ export class TradeBotPageComponent {
     }
 
     console.log(tradeSuggestionObject)
+
+  }
+
+  startEnableGainsLockerMode() {
+
+  }
+
+  cancelEnableGainsLockerMode() {
+
+  }
+
+  enableGainsLockerSelectionChange() {
+
+  }
+
+  enableGainsLockerSubmit() {
 
   }
 

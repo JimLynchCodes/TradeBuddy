@@ -1,0 +1,21 @@
+
+<div
+    style="pointer-events: none; position: absolute; height: 100vh; bottom: 0; margin-left: 1em; display: flex; flex-direction: column-reverse; width: 350px;">
+
+    <div *ngFor="let toast of toasts; let i = index" style="pointer-events: auto;">
+        <alert [type]="toast.type" dismissible="toast.dismissible" [dismissOnTimeout]="toast.timeout"
+            (onClosed)="toastSvc.onClosed(toast)">{{ toast.msg }}
+            <br />
+            
+            <button type="undo" 
+                    class="btn btn-secondary btn-sm mt-2" 
+                    (click)="undoClicked(toast)">
+                        Undo
+                </button>
+        
+        </alert>
+    </div>
+
+</div>
+
+<!-- <button (click)="toastSvc.addToast()"></button> -->

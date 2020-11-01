@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
-import { EnableGainslockConfirmComponent } from './enable-gainslock-confirm/enable-gainslock-confirm.component';
+import { EnableGainslockConfirmComponent } from './enable-gainslock-confirm.component';
 
 @Injectable({
     providedIn: 'root'
@@ -9,14 +9,14 @@ import { EnableGainslockConfirmComponent } from './enable-gainslock-confirm/enab
 export class ModalService {
     bsModalRef: BsModalRef;
     positionSelected: any;
-    numberOfsharesToGainslock: any;
+    numberOfSharesToGainslock: any;
     selectedTriggerPercentage: any;
 
     constructor(
         private bsModalService: BsModalService,
     ) { }
 
-    confirm(position): Observable<string> {
+    confirm(position): Observable<any> {
 
         this.positionSelected = position
 
@@ -34,12 +34,12 @@ export class ModalService {
 
     private getConfirmSubscriber() {
         return (observer) => {
-            const subscription = this.bsModalService.onHidden.subscribe((reason: string) => {
+            const subscription = this.bsModalService.onHidden.subscribe((reason: any) => {
                 observer.next({
-                    answer: this.bsModalRef.content.answer,
+                    answer: this.bsModalRef.content.answer.answer,
                     symbolToGainslock: this.positionSelected.instrument.symbol,
-                    numberOfsharesToGainslock: this.numberOfsharesToGainslock,
-                    selectedTriggerPercentage: this.selectedTriggerPercentage
+                    numberOfSharesToGainslock: this.bsModalRef.content.answer.numberOfSharesToGainslock,
+                    selectedTriggerPercentage: this.bsModalRef.content.answer.selectedTriggerPercentage
                 });
                 observer.complete();
             });

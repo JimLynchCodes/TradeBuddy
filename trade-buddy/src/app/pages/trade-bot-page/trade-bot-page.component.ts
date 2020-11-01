@@ -1,12 +1,12 @@
 
 import { Component, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
+import { HttpClient } from '@angular/common/http';
 import { TdApiService } from '../../services/td-api.service';
 import { ToastManagerService } from '../../services/toast-manager.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { EnableGainslockConfirmComponent } from 'src/app/components/modals/enable-gainslock-confirm/enable-gainslock-confirm.component';
-import { ModalService } from 'src/app/components/modals/modal.service';
+import { ModalService } from '../../components/modals/enable-gainslock-confirm/enable-gainslock-modal.service';
+import { AskCancelOrderModalService } from '../../components/modals/ask-cancel-order/ask-cancel-order-modal.service';
+import { CancelOrderOptions } from 'src/app/components/modals/ask-cancel-order/cancel-order.model';
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -102,10 +102,14 @@ const fakeSellOrder1 = {
 export class TradeBotPageComponent {
 
   accountNumber: string;
-  currentPositions: any[];
-  currentOrders: any;
+  currentEquityPositions: any[];
+  currentOptionPositions: any[];
+  currentCashPositions: any[];
 
-  suggestedBuyOrders: any = [fakeBuyOrder2, fakeBuyOrder3]
+  openSellOrders: any = [];
+  openBuyOrders: any = [];
+
+  suggestedBuyOrders: any = []
   suggestedSellOrders: any = []
 
   @ViewChild('undoToast') undoToast;
@@ -115,14 +119,14 @@ export class TradeBotPageComponent {
     private tdApiSvc: TdApiService,
     private toastSvc: ToastManagerService,
     private bsModalService: BsModalService,
-    private modalService: ModalService ) { }
+    private placeTradeModalSvc: ModalService,
+    private cancelOrderModalSvc: AskCancelOrderModalService) { }
+
+  access_token = ''
 
   title = 'trade-buddy';
-  connectedToText = '[No account connected]';
 
-  access_token = 'ok'
-
-  currentCash = '$10,234'
+  gotTdData = false
 
   portfolioTotalCash = '-'
   portfolioLongAssetsValue = '-'
@@ -130,35 +134,15 @@ export class TradeBotPageComponent {
   portfolioShortOptionsValue = '-'
   portfolioTotalValue = '-'
 
-  alerts: any[] = [{
-    type: 'success',
-    msg: `Well done! You successfully read this important alert message. (added: ${new Date().toLocaleTimeString()})`,
-    timeout: 5000
-  }];
-
-  toasts: any = [{
-    type: 'success',
-    msg: `Trade placed! 10 shares of MSFT @ $15.04 each.`,
-    timeout: 5000
-  }]
-
   undoClicked(): void {
     console.log('undoing last action...');
   }
 
-  onClosed(dismissedAlert: AlertComponent): void {
-    this.alerts = this.alerts.filter(alert => alert !== dismissedAlert);
-  }
-
   ngOnInit() {
-    console.log('init app');
-
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedSellOrders.push(fakeSellOrder1)
-
-    // this.undoToast.show()
 
     const minTime = 10200
 
@@ -167,19 +151,11 @@ export class TradeBotPageComponent {
         this.suggestedBuyOrders.push(fakeBuyOrder1)
     }, minTime)
 
-    setInterval(() => {
-      if (this.suggestedBuyOrders.length < 10)
-        this.toasts.push()
-    }, 5000)
-
-    console.log('toast ', this.undoToast)
-    console.log('toast ', this.undi)
-
     this.tdApiSvc.positions.subscribe(data => {
 
-      if (data.length > 0) {
+      this.gotTdData = true
 
-        this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
+      if (data.length > 0) {
 
         this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
         this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
@@ -188,31 +164,52 @@ export class TradeBotPageComponent {
         this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
         this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
 
+        const sortedPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+
         // sort by market value
-        this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+        this.currentCashPositions = sortedPositions.filter(p => p.instrument.symbol.includes('MMDA'))
+
+        const nonCashPositions = sortedPositions.filter(p => !p.instrument.symbol.includes('MMDA'))
+
+        this.currentEquityPositions = nonCashPositions.filter(p => !p.instrument.symbol.includes('_'))
+
+        this.currentOptionPositions = nonCashPositions.filter(p => p.instrument.symbol.includes('_'))
+
+        // ⓘ
+
+
       } else {
-
         this.tdApiSvc.refreshPositions()
-
       }
 
     }, err => {
       console.log('err: ', err)
     }, () => {
-      console.log('completed: ')
+      console.log('completed getting positions...')
     })
 
-    // this.tdApiSvc.orders.subscribe(data => {
+    this.tdApiSvc.orders.subscribe(data => {
 
-    //   console.log('got orders data', data)
+      console.log('got orders data', data)
 
-    //   this.currentOrders = data[0].securitiesAccount.orderStrategies
+      if (data.length > 0) {
+        const currentOrders = data[0].securitiesAccount.orderStrategies
 
-    // }, err => {
-    //   console.log('err: ', err)
-    // }, () => {
-    //   console.log('completed: ')
-    // })
+
+        this.openBuyOrders = currentOrders.filter(o => o.orderLegCollection[0].instruction === 'BUY')
+        this.openSellOrders = currentOrders.filter(o => o.orderLegCollection[0].instruction === 'SELL')
+
+
+      }
+      else {
+        this.tdApiSvc.refreshOrders()
+      }
+
+    }, err => {
+      console.log('err getting orders: ', err)
+    }, () => {
+      console.log('completed getting orders...')
+    })
 
     // this.tdApiSvc.refreshPositions()
     // this.tdApiSvc.refreshOrders()
@@ -285,22 +282,11 @@ export class TradeBotPageComponent {
     console.log('enabling gains locker for ', position.instrument.symbol)
 
 
-    this.modalService.confirm(
-      position)
-      .subscribe((answer) => {
-        console.log('answer: ', answer)
-        // this.answers.push(answer);
+    this.placeTradeModalSvc.confirm(position)
+      .subscribe((enableGainslockModalResponse) => {
+        console.log('enableGainslockModalResponse is: ', enableGainslockModalResponse)
+        // this.answers.push(answner);
       });
-
-    // const initialState = {
-    //   title: "Enable GainsLocker For This Position?",
-    //   assetName: position.instrument.symbol,
-    //   sharesOwned: position.longQuantity,
-    //   options: ['cancel', 'Enable GainsLock!'],
-    //   answer: "",
-    // };
-    
-    // this.bsModalService.show(EnableGainslockConfirmComponent, { initialState });
   }
 
   cancelEnableGainsLockerMode() {
@@ -312,6 +298,24 @@ export class TradeBotPageComponent {
   }
 
   enableGainsLockerSubmit() {
+
+  }
+
+  cancelOrderClick(order, index) {
+
+    console.log('cancel order clicked: ', order);
+
+    this.cancelOrderModalSvc.confirm(order)
+      .subscribe((cancelOrderModalResponse) => {
+
+        console.log('returned from cancel order modal: ', cancelOrderModalResponse)
+
+        if (cancelOrderModalResponse.answer.cancel === CancelOrderOptions.cancel_order) {
+          console.log('cancelling order!')
+          this.tdApiSvc.cancelOrder(order);
+        }
+
+      });
 
   }
 

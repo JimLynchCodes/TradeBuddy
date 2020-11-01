@@ -1,0 +1,35 @@
+
+<div 
+    class="m-1 my-2 p-2 border order-white text-white rounded mx-4" 
+    [ngClass]="{'bg-primary': order.status !== 'REJECTED' && order.status !== 'CANCELED',
+                'bg-secondary': order.status === 'REJECTED' || order.status === 'CANCELED'}"
+    style="min-width: 95%; max-width: 95%;">
+
+    <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
+
+    <div class="flex-grow-1 row justify-content-between px-3 pt-2">
+        <div>
+            <!-- <span class="px-2">{{i+1}})</span> -->
+            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+        </div>
+
+        <button type="button" class="btn btn-success btn-sm" tooltip=""
+        *ngIf="order.status !== 'REJECTED' && order.status !== 'CANCELED'"
+        (click)="cancelOrderClick(order)">
+        x
+        </button>
+    </div>
+
+    <div class="p-1 m-1 flex-grow-1">
+        {{order.status}} {{order.statusDescription ? '- ' : ''}} {{order.statusDescription}}
+    </div>
+
+    <ul>
+        <div *ngFor="let reason of order.reasons">
+            <li>{{reason.text}}</li>
+        </div>
+    </ul>
+
+    </ng-container>
+
+</div>

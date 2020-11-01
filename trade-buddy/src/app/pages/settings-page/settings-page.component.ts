@@ -96,7 +96,7 @@ const fakeSellOrder1 = {
 export class SettingsPageComponent {
 
   accountNumber: string;
-  currentPositions: any[];
+  currentEquityPositions: any[];
   currentOrders: any;
 
   suggestedBuyOrders: any = [fakeBuyOrder2, fakeBuyOrder3]
@@ -193,7 +193,7 @@ export class SettingsPageComponent {
   private callForPortfolioValues() {
 
     const positionEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=positions'
-    const ordersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
+    const getOrdersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ export class SettingsPageComponent {
     //   this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
 
     //   // sort by market value
-    //   this.currentPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
+    //   this.currentEquityPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
 
     // }, err => {
     //   console.log('err: ', err)
@@ -222,7 +222,7 @@ export class SettingsPageComponent {
     //   console.log('completed: ')
     // })
 
-    // this.http.get(ordersEndpoint, { headers: headers }).subscribe(data => {
+    // this.http.get(getOrdersEndpoint, { headers: headers }).subscribe(data => {
 
     //   console.log('got orders data', data)
 

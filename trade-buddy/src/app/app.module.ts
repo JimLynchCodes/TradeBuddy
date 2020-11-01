@@ -20,6 +20,8 @@ import { LoginCallbackComponent } from './pages/login-callback/login-callback.co
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { EnableGainslockConfirmComponent } from './components/modals/enable-gainslock-confirm/enable-gainslock-confirm.component';
 import { NgxSelectModule } from 'ngx-select-ex';
+import { AskCancelOrderComponent } from './components/modals/ask-cancel-order/ask-cancel-order.component';
+import { OpenOrderItemComponent } from './components/open-order-item/open-order-item.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { NgxSelectModule } from 'ngx-select-ex';
     ToastsContainerComponent,
     LoginCallbackComponent,
     NotFoundComponent,
-    EnableGainslockConfirmComponent
+    EnableGainslockConfirmComponent,
+    AskCancelOrderComponent,
+    OpenOrderItemComponent
   ],
   imports: [
     BrowserModule,

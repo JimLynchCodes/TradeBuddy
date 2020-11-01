@@ -1,4 +1,3 @@
-
 <div class="content" role="main">
 
   <!-- Portfolio Value -->
@@ -15,32 +14,91 @@
     </div>
   </div>
 
+  <!-- Cash Accounts Section -->
+  <div class="container-fluid row m-1 my-2 border border-primary rounded">
+
+    <div class="col-12 p-2">
+
+      <h2 class="text-center pb-2">Cash Holdings</h2>
+
+      <div *ngFor="let cashPosition of currentCashPositions; index as i;"
+        class="m-1 my-2 p-2 border border-primary rounded flex-row d-flex">
+
+        <div class="px-2 flex-grow-1 d-flex align-items-center">{{i+1}})
+          {{cashPosition.instrument.symbol}}: ${{cashPosition.marketValue}}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- Positions Section -->
   <div class="container-fluid row m-1 my-2 border border-primary rounded">
 
     <div class="col-12 p-2">
 
-      <h2 class="text-center pb-2">Positions</h2>
+      <h2 class="text-center pb-2">Current Positions</h2>
 
-      <div *ngFor="let position of currentPositions; index as i;" class="m-1 my-2 p-2 border border-primary rounded flex flex-gow-1 flex-row">
+      <h4 class="text-center pb-2"><i>Equities</i></h4>
 
-        <span class="px-2">{{i+1}})</span>
-        {{position.longQuantity}} shares of {{position.instrument.symbol}} - market value: ${{position.marketValue}}
+      <div *ngFor="let equityPosition of currentEquityPositions; index as i;"
+        class="m-1 my-2 p-2 border border-primary rounded flex-row d-flex">
 
-        <button (click)="enableGainsLockerOnPositionClick(position, index)" >
-          GL
-        </button>
+        <div class="px-2 flex-grow-1 d-flex align-items-center">{{i+1}})
+
+          {{equityPosition.longQuantity}} shares of {{equityPosition.instrument.symbol}}:
+          ${{equityPosition.marketValue}}
+        </div>
+
+
+        <div class="p-2 border border-primary rounded">
+
+          <span>
+            🔒 &nbsp; 0 / 24 &nbsp;
+          </span>
+          <button (click)="enableGainsLockerOnPositionClick(equityPosition, index)">
+            ✎
+          </button>
+        </div>
       </div>
 
-    </div>
+      <br />
 
+      <h4 class="text-center pb-2"><i>Options</i></h4>
+
+      <div *ngFor="let optionPosition of currentOptionPositions; index as i;"
+        class="m-1 my-2 p-2 border border-primary rounded flex-row d-flex">
+
+        <div class="px-2 flex-grow-1 d-flex align-items-center">{{i+1}})
+
+          {{optionPosition.longQuantity}} shares of {{optionPosition.instrument.symbol}}:
+          ${{optionPosition.marketValue}}
+        </div>
+
+
+        <div class="p-2 border border-primary rounded">
+
+          <span>
+            🔒 &nbsp; 0 / 24 &nbsp;
+          </span>
+          <button (click)="enableGainsLockerOnPositionClick(optionPosition, index)">
+            ✎
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+
+
 
   <!-- Active Orders sections -->
 
-  <div class="flex p-1 my-2 border border-primary rounded w-100">
 
-    <h2 class="text-center mb-2 mt-4 pt-2">Active Orders</h2>
+
+
+  <!-- <div class="container-fluid row m-1 my-2 border border-primary rounded p-2 flex-grow-1">
+
+    <h2 class="text-center mb-2 mt-4 pt-2">Open Orders</h2>
 
     <div class="row flex justify-content-around">
 
@@ -78,15 +136,144 @@
 
     </div>
 
+  </div> -->
+
+  <div class="flex p-1 my-2 border border-primary rounded w-100">
+
+    <h2 class="text-center mb-2 mt-4 pt-2">Open Orders</h2>
+
+    <div class="d-flex flex-row justify-content-around">
+
+      <div class="d-flex flex-column flex-grow-1 align-items-center" style="max-width: 50%">
+
+        <h3 class="text-center py-1"><u>BUY</u></h3>
+
+        <div *ngFor="let order of openBuyOrders" class="w-100">
+          <!-- Hi {{order | json}} -->
+          <app-open-order-item [order]="order" (cancelClickedEvent)="cancelOrderClick(order)"></app-open-order-item>
+        </div>
+
+        <!-- <div *ngFor="let order of openBuyOrders; let i = index;"
+          class="m-1 my-2 p-2 border order-white text-white rounded" 
+          [ngClass]="{'bg-primary': order.status !== 'REJECTED' && order.status !== 'CANCELED',
+                      'bg-secondary': order.status === 'REJECTED' || order.status === 'CANCELED'
+                     }"
+          style="min-width: 85%;">
+
+          
+          <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
+            <div class="flex-grow-1 row justify-content-between px-3 pt-2">
+              <div>
+                <span class="px-2">{{i+1}})</span>
+                {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+              </div>
+
+              <button type="button" class="btn btn-success btn-sm" tooltip=""
+                *ngIf="order.status !== 'REJECTED' && order.status !== 'CANCELED'"
+                (click)="cancelOrderClick(order, i)">
+                x
+              </button>
+            </div>
+
+            <div class="p-1 m-1 flex-grow-1">
+
+              {{order.status}} {{order.statusDescription ? '- ' : ''}} {{order.statusDescription}}
+
+            </div>
+
+            <ul>
+              <div *ngFor="let reason of order.reasons">
+                <li>
+                  {{reason.text}}
+                </li>
+              </div>
+            </ul>
+
+
+          </ng-container>
+
+        </div> -->
+
+        <!-- {{openBuyOrders | json}} -->
+
+        <div class="pt-2 text-center" *ngIf="openBuyOrders.length === 0">
+          <br/>
+          <i>You have no open buy orders right now!</i>
+          <br/>
+          <br/>
+          <i>Why not try placing some of the suggested trades? 😉</i>
+        </div>
+
+      </div>
+
+      <!-- Orders -->
+      <div class="d-flex flex-column flex-grow-1 align-items-center">
+
+        <h3 class="text-center py-1"><u>SELL</u></h3>
+
+        <!-- <div *ngFor="let order of suggestedSellOrders; index as i;"
+          class="m-1 my-2 p-2 border order-white bg-primary text-white rounded" style="min-width: 85%;">
+
+          <div class="p-1" *ngIf="order.orderLegCollection[0].instruction === 'SELL'">
+
+            <span class="px-2">{{i+1}})</span>
+            {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+          </div>
+
+        </div> -->
+
+        <ng-container *ngFor="let order of openSellOrders; let i = index;"
+        style="min-width: 85%;">
+
+        
+        <div *ngIf="order.orderLegCollection[0].instruction === 'SELL'"
+        class="m-1 my-2 p-2 border order-white bg-primary text-white rounded" >
+          <div class="flex-grow-1 row justify-content-between px-3 pt-2">
+            <div>
+              <span class="px-2">{{i+1}})</span>
+              {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+            </div>
+
+            <button type="button" class="btn btn-success btn-sm" tooltip=""
+              (click)="cancelOrderClick(order, i)">
+              x
+            </button>
+          </div>
+
+          <ul>
+            <div *ngFor="let reason of order.reasons">
+              <li>
+                {{reason.text}}
+              </li>
+            </div>
+          </ul>
+
+
+        </div>
+
+      </ng-container>
+
+      <div class="pt-2 text-center" *ngIf="openSellOrders.length === 0">
+        <br/>
+        <i>You have no open sell orders right now!</i>
+        <br/>
+        <br/>
+        <i>Why not try enabling GainsLocker on some of your positions? ;)</i>
+      </div>
+
+      </div>
+
+    </div>
+
   </div>
 
   <!-- Suggested Trades sections -->
 
   <div class="flex p-1 my-2 border border-primary rounded w-100">
 
-    <h2 class="text-center mb-2 mt-4 pt-2">Suggested Trades</h2>
+    <h2 class="text-center mb-2 mt-4 pt-2">Trade Suggestions</h2>
 
-    <div class="row justify-content-around">
+    <div class="d-flex flex-row justify-content-around" style="">
 
       <div class="d-flex flex-column flex-grow-1 align-items-center">
 
@@ -107,19 +294,19 @@
                 </li>
               </div>
             </ul>
-            
+
             <div class="flex-grow-1 row justify-content-around">
               <button type="button" class="btn btn-success btn-sm" tooltip=""
-              (click)="placeTradeSuggestionClick(order, i)">
-              Place Trade
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" tooltip=""
-            (click)="dismissTradeSuggestionClick(order, i)">
-            Dismiss
-          </button>
-        </div>
-        
-      </ng-container>
+                (click)="placeTradeSuggestionClick(order, i)">
+                Place Trade
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" tooltip=""
+                (click)="dismissTradeSuggestionClick(order, i)">
+                Dismiss
+              </button>
+            </div>
+
+          </ng-container>
 
         </div>
 
@@ -139,6 +326,17 @@
             {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
           </div>
 
+          <div class="flex-grow-1 row justify-content-around mt-3 mb-1">
+
+            <button type="button" class="btn btn-success btn-sm" tooltip=""
+              (click)="placeTradeSuggestionClick(order, i)">
+              Place Trade
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" tooltip=""
+              (click)="dismissTradeSuggestionClick(order, i)">
+              Dismiss
+            </button>
+          </div>
         </div>
 
       </div>

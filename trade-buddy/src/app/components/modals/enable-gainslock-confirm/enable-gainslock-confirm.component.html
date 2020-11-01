@@ -17,17 +17,15 @@
     <!-- <p> -->
 
     <div class="d-flex flex-row align-items-center mb-4">
-
         <div>
             Shares to GainsLock:
         </div>
         <div style="width: 60px; margin-left: 10px;">
-            <ngx-select [items]="numberOfsharesToGainslockOptions" [(ngModel)]="numberOfsharesToGainslock"></ngx-select>
+            <ngx-select [items]="numberOfSharesToGainslockOptions" [(ngModel)]="numberOfSharesToGainslock"></ngx-select>
         </div>
     </div>
     
     <div class="d-flex flex-row align-items-center mb-4">
-
         <div>
             GainsLocker Trigger %:
         </div>
@@ -36,32 +34,9 @@
         </div>
     </div>
 
-
-
-    <!-- <div class="input-group mb-3"> -->
-        <!-- <div class="input-group-prepend ml-4">
-            <span class="input-group-text" id="basic-addon3">access_token</span>
-        </div> -->
-
-
-
-        <!-- <ngx-select [allowClear]="true" [items]="gainsLockerPercentageOptions" [noAutoComplete]="true"
-            [disabled]="ngxDisabled" [(ngModel)]="ngxValue" placeholder="No city selected">
-        </ngx-select> -->
-
-        <!-- <input type="select" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3" [(ngModel)]="access_token"
-              (keyup.enter)="connectWithAccessTokenClick()"/> -->
-        <!-- </p> -->
-
-        <!-- <p>
-            Gainslock Trigger %:
-        </p> -->
-    <!-- </div> -->
-
     <div class="modal-footer">
         <ng-container *ngIf="options.length">
             <button *ngFor="let option of options" type="button" class="btn" 
             (click)="respond(option)">{{option}}</button>
         </ng-container>
     </div>
-    <!-- [ngClass]="{'btn-primary': index % 2 === 0, 'btn-secondary': index % 2 === 1}" -->

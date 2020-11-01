@@ -8,7 +8,9 @@ const tokenEndpoint = 'https://api.tdameritrade.com/v1/oauth2/token'
 
 const getPositionEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=positions'
 
-const ordersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
+const getOrdersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
+
+const accountsBaseEndpoint = 'https://api.tdameritrade.com/v1/accounts'
 
 interface TokenHolder {
   access_token: string,
@@ -21,7 +23,7 @@ interface TokenHolder {
 export class TdApiService {
 
   positions = new BehaviorSubject([])
-  orders
+  orders = new BehaviorSubject([])
 
   accessToken
   refreshToken
@@ -62,7 +64,10 @@ export class TdApiService {
       this.http.post<TokenHolder>(tokenEndpoint, qs.stringify(body), { headers: tokenHeaders }).subscribe(async response => {
         console.log('got a response... ', response)
         this.setTokens(response.access_token, response.refresh_token);
-        await this.refreshPositions();
+        // await ;
+        // await ;
+
+        await Promise.all([this.refreshPositions(), this.refreshOrders()])
         resolve()
       })
     })
@@ -96,7 +101,7 @@ export class TdApiService {
     return new Promise(resolve => {
       this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe((positions: any) => {
 
-        console.log('got first positions: ', positions)
+        console.log('got positions: ', positions);
 
         this.positions.next(positions);
         resolve()
@@ -105,15 +110,22 @@ export class TdApiService {
 
   }
 
-  refreshOrders() {
+  refreshOrders(): Promise<void> {
 
     const ordersHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.accessToken}`
     })
 
-    this.orders = this.http.get(ordersEndpoint, { headers: ordersHeaders })
+    return new Promise(resolve => {
+      this.http.get(getOrdersEndpoint, { headers: ordersHeaders }).subscribe((orders: any) => {
 
+        console.log('got orderssss: ', orders)
+
+        this.orders.next(orders);
+        resolve()
+      })
+    })
   }
 
   async placeHardcodedOrder() {
@@ -151,6 +163,32 @@ export class TdApiService {
 
     }
 
+
+  }
+
+  async cancelOrder(order: any) {
+    
+    const cancelOrderHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.accessToken}`
+    })
+
+    const cancelOrderEndpoint = `${accountsBaseEndpoint}/${order.accountId}/orders/${order.orderId}`
+
+    console.log('calling to cancel order: ', order.orderId)
+
+    return new Promise(resolve => {
+      this.http.delete(cancelOrderEndpoint, { headers: cancelOrderHeaders }).subscribe((response: any) => {
+
+        console.log('cancelled order! ', response)
+
+        // this.orders.next(orders);
+
+        this.refreshOrders();
+
+        resolve()
+      })
+    })
 
   }
 

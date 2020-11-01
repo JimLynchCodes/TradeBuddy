@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h4 class="modal-title text-center w-100 pl-4">{{title}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <div class="p-1 text-center mb-1">
+
+        <p>
+            Are you sure you want to cancel this order for:
+        </p>
+        
+        <p>( {{order.quantity}} ) shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each?</p>
+    </div>
+
+    <div class="modal-footer">
+        <ng-container *ngIf="options.length">
+            <button *ngFor="let option of options" type="button" class="btn" 
+            (click)="respond(option)">{{option}}</button>
+        </ng-container>
+    </div>

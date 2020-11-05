@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal/';
-import { AskPlaceTradeService } from './ask-place-trade-modal.service';
+import { AskPlaceTradeModalService } from './ask-place-trade-modal.service';
 
 @Component({
   selector: 'app-ask-place-trade',
@@ -13,10 +13,12 @@ export class AskPlaceTradeComponent implements OnInit {
   }
 
   title: string;
-  assetName: string;
-  sharesOwned: string;
+  // assetName: string;
+  // sharesOwned: string;
   options: string[];
   answer: any = {}
+
+  position: any = {}
 
   tradePercentageOptions = ['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%']
   items = ['1%', '2%', '3%', '4%', '5%', '6%', '7%', '8%', '9%', '10%']
@@ -30,10 +32,12 @@ export class AskPlaceTradeComponent implements OnInit {
   
   constructor(
     public bsModalRef: BsModalRef,
-    public gainsLockerSvc: AskPlaceTradeService,
+    public gainsLockerSvc: AskPlaceTradeModalService,
   ) { }
 
-  respond(answer: string) {
+  respond(answer: any) {
+
+    console.log('responding?')
 
     console.log(this.numberOfSharesToTradeOptions)
     console.log(this.numberOfSharesToTrade)

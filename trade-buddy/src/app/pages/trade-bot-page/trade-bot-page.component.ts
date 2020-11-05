@@ -4,9 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { TdApiService } from '../../services/td-api.service';
 import { ToastManagerService } from '../../services/toast-manager.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ModalService } from '../../components/modals/enable-gainslock-confirm/enable-gainslock-modal.service';
+import { EnableGainslockerModalService } from '../../components/modals/enable-gainslock-confirm/enable-gainslock-modal.service';
 import { AskCancelOrderModalService } from '../../components/modals/ask-cancel-order/ask-cancel-order-modal.service';
 import { CancelOrderOptions } from 'src/app/components/modals/ask-cancel-order/cancel-order.model';
+import { AskPlaceTradeModalService } from 'src/app/components/modals/ask-place-trade/ask-place-trade-modal.service';
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -118,8 +119,10 @@ export class TradeBotPageComponent {
     private tdApiSvc: TdApiService,
     private toastSvc: ToastManagerService,
     private bsModalService: BsModalService,
-    private placeTradeModalSvc: ModalService,
-    private cancelOrderModalSvc: AskCancelOrderModalService) { }
+    private enableGainslockerModalSvc: EnableGainslockerModalService,
+    private cancelOrderModalSvc: AskCancelOrderModalService,
+    private placeOrderModalSvc: AskPlaceTradeModalService,
+  ) { }
 
   access_token = ''
 
@@ -197,12 +200,10 @@ export class TradeBotPageComponent {
       console.log('got orders data', data)
 
       if (data.length > 0) {
-        const currentOrders = data[0].securitiesAccount.orderStrategies
-
+        const currentOrders = data[0].securitiesAccount.orderStrategies || []
 
         this.openBuyOrders = currentOrders.filter(o => o.orderLegCollection[0].instruction === 'BUY')
         this.openSellOrders = currentOrders.filter(o => o.orderLegCollection[0].instruction === 'SELL')
-
 
       }
       else {
@@ -284,7 +285,7 @@ export class TradeBotPageComponent {
     //     undo: (toast) => {
 
     //       //DOTO - handle undo click
-          
+
     //       // this.toastSvc.toasts.push(toast)
     //     }
     //   });
@@ -301,6 +302,34 @@ export class TradeBotPageComponent {
     // }
 
     // console.log(tradeSuggestionObject)
+
+    // asdas
+
+    console.log('placing an order: ', order)
+
+    this.placeOrderModalSvc.confirm(order)
+      .subscribe((placeOrderModalResponse) => {
+
+        console.log('returned from place order modal: ', placeOrderModalResponse)
+
+        if (placeOrderModalResponse.answer === 'Cancel') {
+
+          console.log('placing trade! ', placeOrderModalResponse)
+        } else if (placeOrderModalResponse.answer === 'Place Trade!') {
+
+          console.log('cancelled from the place order popup... do nothing?')
+
+        } else {
+          console.log('unrecognized answer from palce order modal... ', placeOrderModalResponse.answer)
+        }
+
+        // if (placeOrderModalResponse.answer.place === placeOrderOptions.place_order) {
+        //   console.log(' order!')
+        //   this.tdApiSvc.placeOrder(order);
+        // }
+
+      });
+
 
   }
 
@@ -325,7 +354,7 @@ export class TradeBotPageComponent {
         }
       });
 
-      // TODO - place trade!
+    // TODO - place trade!
 
     let tradeSuggestionObject
 
@@ -345,8 +374,7 @@ export class TradeBotPageComponent {
   enableGainsLockerOnPositionClick(position, index) {
     console.log('enabling gains locker for ', position.instrument.symbol)
 
-
-    this.placeTradeModalSvc.confirm(position)
+    this.enableGainslockerModalSvc.confirm(position)
       .subscribe((enableGainslockModalResponse) => {
         console.log('enableGainslockModalResponse is: ', enableGainslockModalResponse)
         // this.answers.push(answner);

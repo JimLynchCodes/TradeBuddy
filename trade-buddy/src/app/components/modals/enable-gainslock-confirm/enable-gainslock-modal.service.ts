@@ -6,7 +6,7 @@ import { EnableGainslockConfirmComponent } from './enable-gainslock-confirm.comp
 @Injectable({
     providedIn: 'root'
 })
-export class ModalService {
+export class EnableGainslockerModalService {
     bsModalRef: BsModalRef;
     positionSelected: any;
     numberOfSharesToGainslock: any;

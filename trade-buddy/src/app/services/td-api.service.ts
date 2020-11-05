@@ -40,55 +40,79 @@ export class TdApiService {
     // this.refreshPositions()
 
     this.accessToken = localStorage.getItem('a_token')
-    this.accessTokenExpiryDate = new Date(localStorage.getItem('a_ex_date'))
+    this.accessTokenExpiryDate = new Date(parseInt(localStorage['a_ex_date'], 10));
     this.refreshToken = localStorage.getItem('r_token')
-    this.refreshTokenExpiryDate = new Date(localStorage.getItem('r_ex_date'))
+    this.refreshTokenExpiryDate = new Date(parseInt(localStorage['r_ex_date'], 10));
+
+    console.log('timne raw is: ', localStorage['a_ex_date'])
+    console.log('timne is: ', parseInt(localStorage['a_ex_date'], 10))
+
   }
 
-  async setCallbackCode(code: string): Promise<void> {
-
-    console.log('using code to get access and refresh tokens...', code)
+  async setCallbackCode(code: string = ''): Promise<boolean> {
 
     const now = new Date();
 
-    if (this.accessToken && now < this.accessTokenExpiryDate) {
-      console.log('using the accessToken we have!')
-    }
-    else if (this.refreshToken && now < this.refreshTokenExpiryDate){
-      console.log('using refreshToken to get new access token!')
 
-      await this.callForNewAccessToken(this.refreshToken);
+    // console.log('using code to get access and refresh tokens...', code)
+    console.log('access expiry: ', this.accessTokenExpiryDate)
+    console.log('access expiry: ', typeof this.accessTokenExpiryDate)
+    // console.log('refresh expiry: ', new Date(this.refreshTokenExpiryDate.toString()).getTime())
+    // console.log('now: ', now.getTime())
+    // console.log('refresh good? ', (now < this.refreshTokenExpiryDate))
+    // console.log('using code to get access and refresh tokens...', code)
 
-    }
-    else {
+    console.log('this.accessToken ', this.accessToken)
+    console.log('this.accessToken ', this.accessTokenExpiryDate)
+    console.log('now ', now)
 
-      console.log('using call for new access and refresh')
+    // if (this.accessToken && now < this.accessTokenExpiryDate) {
+    //   console.log('using the accessToken we have!')
+    //   return true
+    // }
+    // else if (this.refreshToken && now < this.refreshTokenExpiryDate) {
+    //   console.log('using refreshToken to get new access token!')
+
+    //   await this.callForNewAccessToken(this.refreshToken);
+    //   return true
+    // }
+    // else if (code === '') {
+
+    //   console.log('no code, we\'re just logged out here!')
+    //   return false
+
+    // } else {
+    //   console.log('using call for new access and refresh')
+
+    console.log('calling iwth code: ', code)
       await this.callForAccessAndRefreshTokens(code)
-    }
+      return true
+
+    // }
 
   }
 
   private async callForNewAccessToken(refreshToken: string): Promise<void> {
-  const tokenHeaders = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    })
+    // const tokenHeaders = new HttpHeaders({
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // })
 
-    const body = {
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-      client_id: environment.td_client,
-      redirect_uri: environment.redirect_uri
-    }
+    // const body = {
+    //   grant_type: 'refresh_token',
+    //   refresh_token: refreshToken,
+    //   client_id: environment.td_client,
+    //   redirect_uri: environment.redirect_uri
+    // }
 
-    return new Promise(resolve => {
-      this.http.post<TokenHolder>(tokenEndpoint, qs.stringify(body), { headers: tokenHeaders }).subscribe(async response => {
-        console.log('got a refresh response... ', response)
-        this.setTokens(response.access_token, response.expires_in);
+    // return new Promise(resolve => {
+    //   this.http.post<TokenHolder>(tokenEndpoint, qs.stringify(body), { headers: tokenHeaders }).subscribe(async response => {
+    //     console.log('got a refresh response... ', response)
+    //     this.setTokens(null, null, response.access_token, response.expires_in);
 
-        await Promise.all([this.refreshPositions(), this.refreshOrders()])
-        resolve()
-      })
-    })
+    //     await Promise.all([this.refreshPositions(), this.refreshOrders()])
+    //     resolve()
+    //   })
+    // })
   }
 
   private async callForAccessAndRefreshTokens(code: string): Promise<void> {
@@ -105,6 +129,8 @@ export class TdApiService {
       client_id: environment.td_client,
       redirect_uri: environment.redirect_uri
     }
+
+    console.log('calling for token(s)...')
 
     return new Promise(resolve => {
       this.http.post<TokenHolder>(tokenEndpoint, qs.stringify(body), { headers: tokenHeaders }).subscribe(async response => {
@@ -126,7 +152,9 @@ export class TdApiService {
       const accessTokenExpiryDate = new Date()
       accessTokenExpiryDate.setSeconds(accessTokenExpiryDate.getSeconds() + accessTokenExpirationTime)
 
-      localStorage.setItem('a_ex_iso_date', accessTokenExpiryDate.toISOString())
+      // localStorage.setItem('a_ex_iso_date', accessTokenExpiryDate.toISOString())
+
+      localStorage['a_ex_date'] = '' + accessTokenExpiryDate.getTime();
 
       this.accessToken = accessToken
       this.accessTokenExpiryDate = accessTokenExpiryDate
@@ -137,39 +165,49 @@ export class TdApiService {
       localStorage.setItem('r_token', refreshToken)
       localStorage.setItem('r_ex_time', refreshTokenExpirationTime)
 
+      console.log('got refresh time: ', refreshTokenExpirationTime)
+
       const refreshTokenExpiryDate = new Date()
       refreshTokenExpiryDate.setSeconds(refreshTokenExpiryDate.getSeconds() + refreshTokenExpirationTime)
 
-      localStorage.setItem('r_ex_iso_date', refreshTokenExpiryDate.toISOString())
+      // localStorage.setItem('r_ex_iso_date', refreshTokenExpiryDate.toISOString())
+      localStorage['r_ex_date'] = '' + refreshTokenExpiryDate.getTime();
 
       this.refreshToken = refreshToken
       this.refreshTokenExpiryDate = refreshTokenExpiryDate
-      console.log('saved a token!')
+      console.log('saved r token!')
     }
 
   }
 
-  refreshPositions(): Promise<void> {
+  async refreshPositions(): Promise<void> {
 
     console.log('refreshing positions...')
 
     //TODO - check tokens before calling? if access expired, refresh it - if refresh expired, show error popup
 
-    const positionsHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.accessToken}`
-    })
+    const connectedToTd = await this.setCallbackCode();
 
-    return new Promise(resolve => {
-      this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe((positions: any) => {
+    if (connectedToTd) {
 
-        console.log('got positions: ', positions);
-
-        this.positions.next(positions);
-        resolve()
+      const positionsHeaders = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.accessToken}`
       })
-    })
 
+      return new Promise(resolve => {
+        this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe((positions: any) => {
+
+          console.log('got positions: ', positions);
+
+          this.positions.next(positions);
+          resolve()
+        })
+      })
+
+    } else {
+      return
+    }
   }
 
   refreshOrders(): Promise<void> {

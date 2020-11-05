@@ -7,10 +7,10 @@ import { AskPlaceTradeComponent } from './ask-place-trade.component';
 @Injectable({
     providedIn: 'root'
 })
-export class AskPlaceTradeService {
+export class AskPlaceTradeModalService {
     bsModalRef: BsModalRef;
     positionSelected: any;
-    numberOfSharesToGainslock: any;
+    sharesOwned: any;
     selectedTriggerPercentage: any;
 
     constructor(
@@ -19,12 +19,14 @@ export class AskPlaceTradeService {
 
     confirm(position): Observable<any> {
 
+        console.log('opening popup with position: ', position)
         this.positionSelected = position
 
         const initialState = {
             title: "Place This Trade?",
-            assetName: position.instrument.symbol,
+            assetName: position.orderLegCollection[0].instrument.symbol,
             sharesOwned: position.longQuantity,
+            position,
             options: ['Cancel', 'Place Trade!']
         };
         this.bsModalRef = this.bsModalService.show(AskPlaceTradeComponent, { initialState });
@@ -35,10 +37,14 @@ export class AskPlaceTradeService {
     private getConfirmSubscriber() {
         return (observer) => {
             const subscription = this.bsModalService.onHidden.subscribe((reason: any) => {
+
+                console.log('got a reason')
+
                 observer.next({
                     answer: this.bsModalRef.content.answer.answer,
-                    symbolToGainslock: this.positionSelected.instrument.symbol,
-                    numberOfSharesToTrade: this.bsModalRef.content.answer.numberOfSharesToTrade,
+                    assetName: this.positionSelected.orderLegCollection[0].instrument.symbol,
+                    numberOfSharesToTrade: this.positionSelected.orderLegCollection[0].longQuantity,
+                    position: this.positionSelected,
                     selectedTriggerPercentage: this.bsModalRef.content.answer.selectedTriggerPercentage
                 });
                 observer.complete();

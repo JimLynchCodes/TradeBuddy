@@ -6,34 +6,31 @@
 </div>
 <div class="modal-body">
 
+    <p>Please confirm that you would like to place this order!</p>
+
     <p>
-        Asset: {{assetName}}
+        Asset: {{ position?.orderLegCollection[0].instrument.symbol }}
+        {{position | json}}
     </p>
 
     <p>
-        Shares Owned: {{sharesOwned}}
+        Shares to {{position?.orderLegCollection[0].instruction}} : {{ position.quantity }}
     </p>
 
-    <!-- <p> -->
+    <p>
+        Current Price: {{ position?.price }}
+    </p>
 
-    <div class="d-flex flex-row align-items-center mb-4">
-        <div>
-            Shares to Trade:
-        </div>
-        <div style="width: 60px; margin-left: 10px;">
-            <ngx-select [items]="numberOfSharesToTradeOptions" [(ngModel)]="numberOfSharesToTrade"></ngx-select>
-        </div>
-    </div>
-    
-    <div class="d-flex flex-row align-items-center mb-4">
-        <div>
-            Tradeer Trigger %:
-        </div>
-        <div style="width: 60px; margin-left: 10px;">
-            <ngx-select [items]="tradePercentageOptions" [(ngModel)]="selectedTriggerPercentage"></ngx-select>
-        </div>
-    </div>
+    <hr/>
 
+    <p>
+        Total: {{ +position?.quantity * +position?.price}}
+    </p>
+
+    <!-- <p>
+        {{position.orderLegCollection[0].instruction}} 
+    </p> -->
+  
     <div class="modal-footer">
         <ng-container *ngIf="options.length">
             <button *ngFor="let option of options" type="button" class="btn" 

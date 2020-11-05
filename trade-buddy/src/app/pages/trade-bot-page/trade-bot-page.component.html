@@ -3,15 +3,27 @@
   <!-- Portfolio Value -->
 
   <div class="card border border-primary rounded flex-grow-1 h-auto text-dark flex-column m-4">
-    <div class="card-body p-1 d-flex flex flex-grow-1 flex-column justify-content-end text-center">
-      <h6 class="card-title">Portfolio Value</h6>
-      <h5 class="card-title">Cash Balance: {{portfolioTotalCash}}</h5>
-      <h5 class="card-title">Long Assets Value: {{portfolioLongAssetsValue}}</h5>
-      <h5 class="card-title">Long Options Value: {{portfolioLongOptionsValue}}</h5>
-      <h5 class="card-title">Short Options Value: {{portfolioShortOptionsValue}}</h5>
-      <hr class="bg-dark rounded" />
-      <h4 class="card-title">Total: {{portfolioTotalValue}}</h4>
+    <div class="card-body p-x1 py-1 mt-1 d-flex flex flex-grow-1 flex-row justify-content-end text-center">
+
+      <div *ngIf="gotTdData !== false" class="d-flex flex-row w-100 justify-content-around pt-2">
+
+        <h5 class="card-title" tooltip="Postfolio Total Value" style="font-size: calc(3px + 2vw);">
+          💰<br />{{portfolioTotalValue | moneyWithCommas}}</h5>
+        <h5 tooltip="Cash Balance" class="card-title" style="font-size: calc(3px + 2vw);">
+          💵<br />{{portfolioTotalCash | moneyWithCommas}}</h5>
+        <h5 tooltip="Long Assets Value" class="card-title" style="font-size: calc(3px + 2vw);">
+          🐂<br />{{portfolioLongAssetsValue | moneyWithCommas}}</h5>
+        <h5 tooltip="Long Options Value" class="card-title" style="font-size: calc(3px + 2vw);">
+          📞<br />{{portfolioLongOptionsValue | moneyWithCommas}}</h5>
+        <h5 tooltip="Short Options Value" class="card-title" style="font-size: calc(3px + 2vw);">
+          🩳<br />{{portfolioShortOptionsValue | moneyWithCommas}}</h5>
+
+      </div>
     </div>
+
+    <p class="text-center my-4" *ngIf="gotTdData === false">
+      <i>Connect through TD to view your account info!</i>
+    </p>
   </div>
 
   <!-- Cash Accounts Section -->
@@ -25,10 +37,14 @@
         class="m-1 my-2 p-2 border border-primary rounded flex-row d-flex">
 
         <div class="px-2 flex-grow-1 d-flex align-items-center">{{i+1}})
-          {{cashPosition.instrument.symbol}}: ${{cashPosition.marketValue}}
+          {{cashPosition.instrument.symbol}}: ${{cashPosition.marketValue | moneyWithCommas}}
         </div>
 
       </div>
+
+      <p *ngIf="!gotTdData" class="text-center my-4">
+        <i>Connect through TD to view your cash accounts!</i>
+      </p>
     </div>
   </div>
 
@@ -41,13 +57,17 @@
 
       <h4 class="text-center pb-2"><i>Equities</i></h4>
 
+      <p *ngIf="!gotTdData" class="text-center my-4">
+        <i>Connect through TD to view your equity holdings!</i>
+      </p>
+
       <div *ngFor="let equityPosition of currentEquityPositions; index as i;"
         class="m-1 my-2 p-2 border border-primary rounded flex-row d-flex">
 
         <div class="px-2 flex-grow-1 d-flex align-items-center">{{i+1}})
 
           {{equityPosition.longQuantity}} shares of {{equityPosition.instrument.symbol}}:
-          ${{equityPosition.marketValue}}
+          ${{equityPosition.marketValue | moneyWithCommas}}
         </div>
 
 
@@ -66,13 +86,16 @@
 
       <h4 class="text-center pb-2"><i>Options</i></h4>
 
+      <p *ngIf="!gotTdData" class="text-center my-4">
+        <i>Connect through TD to view your option holdings!</i>
+      </p>
+
       <div *ngFor="let optionPosition of currentOptionPositions; index as i;"
         class="m-1 my-2 p-2 border border-primary rounded flex-row d-flex">
 
         <div class="px-2 flex-grow-1 d-flex align-items-center">{{i+1}})
-
           {{optionPosition.longQuantity}} shares of {{optionPosition.instrument.symbol}}:
-          ${{optionPosition.marketValue}}
+          ${{optionPosition.marketValue | moneyWithCommas}}
         </div>
 
 
@@ -142,6 +165,10 @@
 
     <h2 class="text-center mb-2 mt-4 pt-2">Open Orders</h2>
 
+    <p *ngIf="!gotTdData" class="text-center my-4">
+      <i>Connect through TD to view your current open orders!</i>
+    </p>
+
     <div class="d-flex flex-row justify-content-around">
 
       <div class="d-flex flex-column flex-grow-1 align-items-center" style="max-width: 50%">
@@ -197,11 +224,11 @@
         <!-- {{openBuyOrders | json}} -->
 
         <div class="pt-2 text-center" *ngIf="openBuyOrders.length === 0">
-          <br/>
+          <br />
           <i>You have no open buy orders right now!</i>
-          <br/>
-          <br/>
-          <i>Why not try placing some of the suggested trades? 😉</i>
+          <br />
+          <br />
+          <i>Why not try placing some of the suggested trades?</i>&nbsp;😉
         </div>
 
       </div>
@@ -222,49 +249,39 @@
 
         </div> -->
 
-        <ng-container *ngFor="let order of openSellOrders; let i = index;"
-        style="min-width: 85%;">
+        <ng-container *ngFor="let order of openSellOrders; let i = index;" style="min-width: 85%;">
+          <div *ngIf="order.orderLegCollection[0].instruction === 'SELL'"
+            class="m-1 my-2 p-2 border order-white bg-primary text-white rounded">
+            <div class="flex-grow-1 row justify-content-between px-3 pt-2">
+              <div>
+                <span class="px-2">{{i+1}})</span>
+                {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+              </div>
 
-        
-        <div *ngIf="order.orderLegCollection[0].instruction === 'SELL'"
-        class="m-1 my-2 p-2 border order-white bg-primary text-white rounded" >
-          <div class="flex-grow-1 row justify-content-between px-3 pt-2">
-            <div>
-              <span class="px-2">{{i+1}})</span>
-              {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
+              <button type="button" class="btn btn-success btn-sm" tooltip="" (click)="cancelOrderClick(order, i)">
+                x
+              </button>
             </div>
 
-            <button type="button" class="btn btn-success btn-sm" tooltip=""
-              (click)="cancelOrderClick(order, i)">
-              x
-            </button>
+            <ul>
+              <div *ngFor="let reason of order.reasons">
+                <li>
+                  {{reason.text}}
+                </li>
+              </div>
+            </ul>
           </div>
+        </ng-container>
 
-          <ul>
-            <div *ngFor="let reason of order.reasons">
-              <li>
-                {{reason.text}}
-              </li>
-            </div>
-          </ul>
-
-
+        <div class="pt-2 text-center" *ngIf="openSellOrders.length === 0">
+          <br />
+          <i>You have no open sell orders right now!</i>
+          <br />
+          <br />
+          <i>Why not try enabling GainsLocker on some of your positions? ;)</i>
         </div>
-
-      </ng-container>
-
-      <div class="pt-2 text-center" *ngIf="openSellOrders.length === 0">
-        <br/>
-        <i>You have no open sell orders right now!</i>
-        <br/>
-        <br/>
-        <i>Why not try enabling GainsLocker on some of your positions? ;)</i>
       </div>
-
-      </div>
-
     </div>
-
   </div>
 
   <!-- Suggested Trades sections -->
@@ -273,7 +290,12 @@
 
     <h2 class="text-center mb-2 mt-4 pt-2">Trade Suggestions</h2>
 
-    <div class="d-flex flex-row justify-content-around" style="">
+    <p *ngIf="!gotTdData" class="text-center my-4">
+      <i>Connect through TD to place trades!</i>
+    </p>
+
+    <div class="d-flex flex-row justify-content-around">
+
 
       <div class="d-flex flex-column flex-grow-1 align-items-center">
 
@@ -282,9 +304,9 @@
         <div *ngFor="let order of suggestedBuyOrders; let i = index;"
           class="m-1 my-2 p-2 border order-white bg-primary text-white rounded" style="min-width: 85%;">
 
-          <span class="px-2">{{i+1}})</span>
+          <!-- <span class="px-2">{{i+1}})</span> -->
 
-          <ng-container *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
+          <div *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
             {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
 
             <ul>
@@ -306,7 +328,7 @@
               </button>
             </div>
 
-          </ng-container>
+          </div>
 
         </div>
 
@@ -343,6 +365,14 @@
 
     </div>
 
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
   </div>
 
 </div>

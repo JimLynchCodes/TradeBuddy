@@ -14,7 +14,9 @@ export class AppComponent {
   constructor(private http: HttpClient, private tdApiSvc: TdApiService) { }
 
   title = 'trade-buddy';
-  connectedToText = '[No account connected]';
+  
+  defaultNotConnectedToTdText = '[No account connected]'
+  connectedToText = this.defaultNotConnectedToTdText;
 
   access_token = 'ok'
 
@@ -43,10 +45,27 @@ export class AppComponent {
     //     })
     // }, 5000)
 
+  
+  
+    this.tdApiSvc.positions.subscribe(data => {
+
+      console.log('data, ', data)
+      this.connectedToText = this.hideFullStringWithAsertisks(data[0]?.securitiesAccount.accountId)
+
+    })
   }
 
-  ngAfterViewInit() { }
+  private hideFullStringWithAsertisks(input: string): string {
 
+    return input ? input.substr(0, 1) + '*****' + input.substr(input.length - 3, 3) :
+      this.defaultNotConnectedToTdText
+  }
+
+  // ngAfterViewInit() { }
+
+  // this.tdApiSvc.positions.subscribe(data => {
+
+  // })
   // connectWithAccessTokenClick() {
 
   //   console.log('trying to connect with: ', this.access_token)
@@ -60,8 +79,7 @@ export class AppComponent {
     
   //   // const getOrdersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
 
-  //   this.tdApiSvc.positions.subscribe(data => {
-
+   
   //   // this.http.get(positionEndpoint, { headers: headers }).subscribe(
 
   //     console.log('got positions data', data)
@@ -78,11 +96,11 @@ export class AppComponent {
   //     // sort by market value
   //     this.currentEquityPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
 
-  //   }, err => {
-  //     console.log('err: ', err)
-  //   }, () => {
-  //     console.log('completed: ')
-  //   })
+    // }, err => {
+    //   console.log('err: ', err)
+    // }, () => {
+    //   console.log('completed: ')
+    // })
 
   //   // this.http.get(getOrdersEndpoint, { headers: headers }).subscribe(data => {
 
@@ -100,10 +118,7 @@ export class AppComponent {
 
   // }
 
-  // private hideFullStringWithAsertisks(input: string): string {
-
-  //   return input.substr(0, 1) + '*****' + input.substr(input.length - 3, 3)
-  // }
+  
 
   // dismissTradeSuggestionClick(order, index) {
   //   console.log('dismissing trade at index ', index)

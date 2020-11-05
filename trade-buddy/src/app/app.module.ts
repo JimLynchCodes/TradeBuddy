@@ -22,6 +22,8 @@ import { EnableGainslockConfirmComponent } from './components/modals/enable-gain
 import { NgxSelectModule } from 'ngx-select-ex';
 import { AskCancelOrderComponent } from './components/modals/ask-cancel-order/ask-cancel-order.component';
 import { OpenOrderItemComponent } from './components/open-order-item/open-order-item.component';
+import { MoneyWithCommasPipe } from './pipes/money-with-commas.pipe';
+import { AskPlaceTradeComponent } from './components/modals/ask-place-trade/ask-place-trade.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { OpenOrderItemComponent } from './components/open-order-item/open-order-
     NotFoundComponent,
     EnableGainslockConfirmComponent,
     AskCancelOrderComponent,
-    OpenOrderItemComponent
+    OpenOrderItemComponent,
+    MoneyWithCommasPipe,
+    AskPlaceTradeComponent
   ],
   imports: [
     BrowserModule,

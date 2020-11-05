@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 import { ToastManagerService } from '../../services/toast-manager.service';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -12,6 +12,8 @@ export class ToastsContainerComponent implements OnInit {
 
   toasts;
   
+  undoneDismissedSuggestedOrders: BehaviorSubject<any> = new BehaviorSubject<any>(undefined)
+
   constructor(public toastSvc: ToastManagerService) { }
 
   ngOnInit(): void {
@@ -31,7 +33,11 @@ export class ToastsContainerComponent implements OnInit {
   }
 
   undoClicked(toast) {
+
     console.log('undo clicked for toast! ', toast)
+
+    this.undoneDismissedSuggestedOrders.next(toast);
+
   }
 
 }

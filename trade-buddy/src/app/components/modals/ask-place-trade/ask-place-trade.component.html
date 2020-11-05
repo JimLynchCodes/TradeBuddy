@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <p>
+        Asset: {{assetName}}
+    </p>
+
+    <p>
+        Shares Owned: {{sharesOwned}}
+    </p>
+
+    <!-- <p> -->
+
+    <div class="d-flex flex-row align-items-center mb-4">
+        <div>
+            Shares to Trade:
+        </div>
+        <div style="width: 60px; margin-left: 10px;">
+            <ngx-select [items]="numberOfSharesToTradeOptions" [(ngModel)]="numberOfSharesToTrade"></ngx-select>
+        </div>
+    </div>
+    
+    <div class="d-flex flex-row align-items-center mb-4">
+        <div>
+            Tradeer Trigger %:
+        </div>
+        <div style="width: 60px; margin-left: 10px;">
+            <ngx-select [items]="tradePercentageOptions" [(ngModel)]="selectedTriggerPercentage"></ngx-select>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <ng-container *ngIf="options.length">
+            <button *ngFor="let option of options" type="button" class="btn" 
+            (click)="respond(option)">{{option}}</button>
+        </ng-container>
+    </div>

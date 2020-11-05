@@ -1,6 +1,6 @@
 
 <div
-    style="pointer-events: none; position: absolute; height: 100vh; bottom: 0; margin-left: 1em; display: flex; flex-direction: column-reverse; width: 350px;">
+    style="pointer-events: none; position: absolute; height: 100vh; bottom: 0; margin-left: 1em; display: flex; flex-direction: column-reverse; width: 450px;">
 
     <div *ngFor="let toast of toasts; let i = index" style="pointer-events: auto;">
         <alert [type]="toast.type" dismissible="toast.dismissible" [dismissOnTimeout]="toast.timeout"

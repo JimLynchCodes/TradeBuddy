@@ -15,30 +15,23 @@ export class ToastManagerService {
 
   toastStream = new BehaviorSubject(this.toasts)
 
-  constructor() { }
-
-  addHardcodedToastToast() {
-    this.toasts.push({
-      id: Math.floor(Math.random() * 10000),
-      type: 'success',
-      msg: `New Toast ch.`,
-      timeout: 10_000
-    })
+  defaultToast = {
+    id: Math.floor(Math.random() * 10000),
+    type: 'success',
+    msg: `New Toast ch.`,
+    timeout: 5000, 
+    undo: (toast) => {
+      // this.toasts.push(toast)
+    }
   }
 
-  addToast() {
+  constructor() { }
+
+  addToast(toast = this.defaultToast) {
     console.log('adding toast')
-    this.toasts.push({
-      id: Math.floor(Math.random() * 10000),
-      type: 'success',
-      msg: `New Toast ch.`,
-      timeout: 5000
-    })
+    this.toasts.push(toast)
 
     this.toastStream.next(this.toasts)
-
-    console.log('toasts now: ', this.toasts)
-    console.log('toastsStream now: ', this.toastStream)
   }
 
   onClosed(closedToast: any): void {

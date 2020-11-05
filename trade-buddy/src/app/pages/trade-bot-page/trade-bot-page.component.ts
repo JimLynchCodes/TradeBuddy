@@ -28,8 +28,7 @@ const fakeBuyOrder1 = {
   },
   {
     text: 'triple gainers list 10/14/2020 with 80% buy recc'
-  }
-  ]
+  }]
 
 }
 
@@ -138,7 +137,13 @@ export class TradeBotPageComponent {
     console.log('undoing last action...');
   }
 
+  private refreshAccessTokenIfNecessary() {
+
+  }
+
   ngOnInit() {
+    this.refreshAccessTokenIfNecessary();
+
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedBuyOrders.push(fakeBuyOrder1)
@@ -153,9 +158,8 @@ export class TradeBotPageComponent {
 
     this.tdApiSvc.positions.subscribe(data => {
 
-      this.gotTdData = true
-
       if (data.length > 0) {
+        this.gotTdData = true
 
         this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
         this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
@@ -235,7 +239,7 @@ export class TradeBotPageComponent {
   }
 
   dismissTradeSuggestionClick(order, index) {
-    console.log('dismissing trade at index ', index)
+    console.log('dismissing trade at index ', index, order)
 
     let tradeSuggestionObject
 
@@ -245,23 +249,83 @@ export class TradeBotPageComponent {
       tradeSuggestionObject = this.suggestedSellOrders.splice(index, 1);
     }
 
+    tradeSuggestionObject.oldIndex = index;
+
     console.log('trade Sugg is: ', tradeSuggestionObject)
+
+    // this.
+
+    this.toastSvc.addToast({
+      id: Math.floor(Math.random() * 10000),
+      type: 'success',
+      msg: `Suggestion dismissed!
+        "${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} at $${order.price}"`,
+      timeout: 30000,
+      undo: (toast) => {
+        this.toastSvc.toasts.push(toast)
+      }
+    })
+
   }
 
   async placeTradeSuggestionClick(order, index) {
 
-    console.log(`order ${JSON.stringify(order)} trade for`)
-    console.log(`Now, sd sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
+    // console.log(`order ${JSON.stringify(order)} trade for`)
+    // console.log(`Now, sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
+
+    // // await this.ordersService.placeOrder(order)
+
+    // this.toastSvc.addToast(
+    //   {
+    //     id: Math.floor(Math.random() * 10000),
+    //     type: 'success',
+    //     msg: `Bot Trade placed! ${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} @ $${order.price} each.`,
+    //     timeout: 5000,
+    //     undo: (toast) => {
+
+    //       //DOTO - handle undo click
+          
+    //       // this.toastSvc.toasts.push(toast)
+    //     }
+    //   });
+
+    // let tradeSuggestionObject
+
+    // console.log(order.instruction)
+    // if (order.orderLegCollection[0].instruction === 'BUY') {
+
+    //   console.log('splicing buys')
+    //   tradeSuggestionObject = this.suggestedBuyOrders.splice(index, 1);
+    // } else {
+    //   tradeSuggestionObject = this.suggestedSellOrders.splice(index, 1);
+    // }
+
+    // console.log(tradeSuggestionObject)
+
+  }
+
+  async placeTradeSuggestionConfirmed(order, index) {
+
+    // console.log(`order ${JSON.stringify(order)} trade for`)
+    // console.log(`Now, sending a ${order.instruction} trade for ${order.quantity} shared of ${order.symbol}`)
 
     // await this.ordersService.placeOrder(order)
 
-    this.toastSvc.addToast()
-    // this.toasts.push({
-    //   type: 'success',
-    //   msg: `Bot Trade placed! ${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} @ $${order.price} each.`,
-    //   dismissible: true,
-    //   timeout: 5000,
-    // });
+    this.toastSvc.addToast(
+      {
+        id: Math.floor(Math.random() * 10000),
+        type: 'success',
+        msg: `Trade placed! ${order.quantity} shares of ${order.orderLegCollection[0].instrument.symbol} @ $${order.price} each.`,
+        timeout: 5000,
+        undo: (toast) => {
+
+          //DOTO - handle undo click
+
+          // this.toastSvc.toasts.push(toast)
+        }
+      });
+
+      // TODO - place trade!
 
     let tradeSuggestionObject
 

@@ -140,17 +140,17 @@ export class TradeBotPageComponent {
     console.log('undoing last action...');
   }
 
-  private refreshAccessTokenIfNecessary() {
+  // private refreshAccessTokenIfNecessary() {
 
-  }
+  // }
 
   ngOnInit() {
-    this.refreshAccessTokenIfNecessary();
+    // this.refreshAccessTokenIfNecessary();
 
-    this.suggestedBuyOrders.push(fakeBuyOrder1)
-    this.suggestedBuyOrders.push(fakeBuyOrder1)
-    this.suggestedBuyOrders.push(fakeBuyOrder1)
-    this.suggestedSellOrders.push(fakeSellOrder1)
+    // this.suggestedBuyOrders.push(fakeBuyOrder1)
+    // this.suggestedBuyOrders.push(fakeBuyOrder1)
+    // this.suggestedBuyOrders.push(fakeBuyOrder1)
+    // this.suggestedSellOrders.push(fakeSellOrder1)
 
     const minTime = 10200
 
@@ -160,6 +160,8 @@ export class TradeBotPageComponent {
     }, minTime)
 
     this.tdApiSvc.positions.subscribe(data => {
+
+      console.log('got positions data: ', data)
 
       if (data.length > 0) {
         this.gotTdData = true
@@ -186,7 +188,12 @@ export class TradeBotPageComponent {
 
 
       } else {
-        this.tdApiSvc.refreshPositions()
+
+        console.log('setting cash positions to empty...')
+
+        this.currentOptionPositions = []
+        this.currentEquityPositions = []
+        this.currentCashPositions = []
       }
 
     }, err => {
@@ -207,7 +214,9 @@ export class TradeBotPageComponent {
 
       }
       else {
-        this.tdApiSvc.refreshOrders()
+        this.openBuyOrders = []
+        this.openSellOrders = []
+        // this.tdApiSvc.refreshOrders()
       }
 
     }, err => {
@@ -216,10 +225,17 @@ export class TradeBotPageComponent {
       console.log('completed getting orders...')
     })
 
-    // this.tdApiSvc.refreshPositions()
-    // this.tdApiSvc.refreshOrders()
+    console.log('Trade Bot Page Component starting up!')
 
-    // this.undoToast.toast.show()
+
+    this.tdApiSvc.logoutWatcher.subscribe( (loggedOut) => {
+      if (loggedOut)
+        this.gotTdData = false;
+    })
+
+    this.tdApiSvc.refreshData()
+
+
   }
 
   connectWithAccessTokenClick() {
@@ -314,10 +330,10 @@ export class TradeBotPageComponent {
 
         if (placeOrderModalResponse.answer === 'Cancel') {
 
-          console.log('placing trade! ', placeOrderModalResponse)
-        } else if (placeOrderModalResponse.answer === 'Place Trade!') {
-
           console.log('cancelled from the place order popup... do nothing?')
+        } else if (placeOrderModalResponse.answer === 'Place Trade!') {
+          
+          console.log('placing trade! ', placeOrderModalResponse)
 
         } else {
           console.log('unrecognized answer from palce order modal... ', placeOrderModalResponse.answer)

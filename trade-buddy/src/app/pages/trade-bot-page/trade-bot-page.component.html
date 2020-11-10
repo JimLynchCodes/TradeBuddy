@@ -296,15 +296,13 @@
 
     <div class="d-flex flex-row justify-content-around">
 
-
-      <div class="d-flex flex-column flex-grow-1 align-items-center">
+      <!-- Suggested Buy Orders -->
+      <div class="d-flex flex-column flex-grow-1 align-items-center w-50">
 
         <h3 class="text-center py-1"><u>BUY</u></h3>
 
         <div *ngFor="let order of suggestedBuyOrders; let i = index;"
           class="m-1 my-2 p-2 border order-white bg-primary text-white rounded" style="min-width: 85%;">
-
-          <!-- <span class="px-2">{{i+1}})</span> -->
 
           <div *ngIf="order.orderLegCollection[0].instruction === 'BUY'">
             {{order.quantity}} shares of {{order.orderLegCollection[0].instrument.symbol}} @ ${{order.price}} each.
@@ -334,8 +332,8 @@
 
       </div>
 
-      <!-- Orders -->
-      <div class="d-flex flex-column flex-grow-1 align-items-center">
+      <!-- Suggested Sell Orders -->
+      <div class="d-flex flex-column flex-grow-1 align-items-center w-50">
 
         <h3 class="text-center py-1"><u>SELL</u></h3>
 

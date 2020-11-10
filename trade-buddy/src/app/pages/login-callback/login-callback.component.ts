@@ -17,7 +17,7 @@ export class LoginCallbackComponent implements OnInit {
       console.log('params are: ', params)
       console.log('got the code: ', params.code)
 
-      await this.tdApiSvc.setCallbackCode(params.code)
+      await this.tdApiSvc.handleNewSuccessfulLogin(params.code)
 
       this.router.navigateByUrl('')
 

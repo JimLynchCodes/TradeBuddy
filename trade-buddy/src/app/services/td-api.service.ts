@@ -12,6 +12,13 @@ const getOrdersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=order
 
 const accountsBaseEndpoint = 'https://api.tdameritrade.com/v1/accounts'
 
+enum TdTokenStatus {
+  missing_tokens = 'missing_tokens',
+  valid_access_token = 'valid_access_token',
+  invalid_access_token_valid_refresh_token = 'invalid_access_token_valid_refresh_token',
+  both_tokens_expired = 'both_tokens_expired',
+}
+
 interface TokenHolder {
   access_token: string,
   expires_in: number
@@ -29,6 +36,8 @@ export class TdApiService {
   positions = new BehaviorSubject([])
   orders = new BehaviorSubject([])
 
+  logoutWatcher = new BehaviorSubject(false)
+
   accessToken
   refreshToken
 
@@ -36,66 +45,114 @@ export class TdApiService {
   accessTokenExpiryDate: Date;
   refreshTokenExpiryDate: Date;
 
-  constructor(private http: HttpClient) {
-    // this.refreshPositions()
+  currentlyCallingForNewAccessToken = false
+
+  logout() {
+
+    console.log('logging out!');
+
+    this.positions.next([])
+    this.orders.next([])
+
+    delete this.accessToken
+    delete this.refreshToken
+    delete this.accountId
+    delete this.accessTokenExpiryDate
+    delete this.refreshTokenExpiryDate
+
+    this.logoutWatcher.next(true)
+
+    localStorage.clear()
+  }
+
+  constructor(private http: HttpClient) { }
+
+  async refreshData() {
+    // await Promise.all([this.refreshPositions(), this.refreshOrders()])
+    await this.refreshPositions()
+    await this.refreshOrders()
+  }
+
+  async init() {
+    console.log('TD Service is starting up!')
+
+    const tokenStatus = this.getCurrentTokenStatus()
+    console.log('current token status: ', tokenStatus)
+    await this.getNewTokensIfNecessary(tokenStatus)
+
+  }
+
+  /**
+   *  Checks the localstorage for tokens. If they are expired, go to "logged out mode".
+   */
+  getCurrentTokenStatus(): TdTokenStatus {
+
+    const now = new Date();
 
     this.accessToken = localStorage.getItem('a_token')
     this.accessTokenExpiryDate = new Date(parseInt(localStorage['a_ex_date'], 10));
     this.refreshToken = localStorage.getItem('r_token')
     this.refreshTokenExpiryDate = new Date(parseInt(localStorage['r_ex_date'], 10));
 
-    console.log('timne raw is: ', localStorage['a_ex_date'])
-    console.log('timne is: ', parseInt(localStorage['a_ex_date'], 10))
+    console.log('a_expiry date:, ', this.accessTokenExpiryDate)
+    console.log('r_expiry date:, ', this.refreshTokenExpiryDate)
+    console.log('c_expiry date:, ', now)
+
+
+    if (!this.accessToken && !this.refreshToken)
+      return TdTokenStatus.missing_tokens
+
+    if (this.accessToken && this.accessTokenExpiryDate && now < this.accessTokenExpiryDate)
+      return TdTokenStatus.valid_access_token
+
+    if (this.refreshToken && this.refreshTokenExpiryDate && now < this.refreshTokenExpiryDate)
+      return TdTokenStatus.invalid_access_token_valid_refresh_token
+
+    return TdTokenStatus.both_tokens_expired
+  }
+
+  async getNewTokensIfNecessary(tokenStatus: TdTokenStatus) {
+
+    console.log('do we need to call for new tokens? ', tokenStatus)
+
+    switch (tokenStatus) {
+
+      case TdTokenStatus.missing_tokens:
+        // (Nothing to do - logged out mode)
+        break;
+
+      case TdTokenStatus.valid_access_token:
+        // (Nothing to do) - access token is valid!
+        break;
+
+      case TdTokenStatus.invalid_access_token_valid_refresh_token:
+        await this.callWithRefreshTokenForNewAccessToken(this.refreshToken)
+        break;
+
+      case TdTokenStatus.both_tokens_expired:
+        // Show "You have been logged out" somewhere?
+
+        break;
+
+      default:
+        console.log('unrecognized token status: ', tokenStatus)
+
+    }
 
   }
 
-  async setCallbackCode(code: string = ''): Promise<boolean> {
-
-    const now = new Date();
-
-
-    // console.log('using code to get access and refresh tokens...', code)
-    console.log('access expiry: ', this.accessTokenExpiryDate)
-    console.log('access expiry: ', typeof this.accessTokenExpiryDate)
-    // console.log('refresh expiry: ', new Date(this.refreshTokenExpiryDate.toString()).getTime())
-    // console.log('now: ', now.getTime())
-    // console.log('refresh good? ', (now < this.refreshTokenExpiryDate))
-    // console.log('using code to get access and refresh tokens...', code)
-
-    console.log('this.accessToken ', this.accessToken)
-    console.log('this.accessToken ', this.accessTokenExpiryDate)
-    console.log('now ', now)
-
-    // if (this.accessToken && now < this.accessTokenExpiryDate) {
-    //   console.log('using the accessToken we have!')
-    //   return true
-    // }
-    // else if (this.refreshToken && now < this.refreshTokenExpiryDate) {
-    //   console.log('using refreshToken to get new access token!')
-
-    //   await this.callForNewAccessToken(this.refreshToken);
-    //   return true
-    // }
-    // else if (code === '') {
-
-    //   console.log('no code, we\'re just logged out here!')
-    //   return false
-
-    // } else {
-    //   console.log('using call for new access and refresh')
-
-    console.log('calling iwth code: ', code)
-      await this.callForAccessAndRefreshTokens(code)
-      return true
-
-    // }
+  async handleNewSuccessfulLogin(callbackCode: string = ''): Promise<void> {
+    return this.callWithCodeForAccessAndRefreshTokens(callbackCode)
 
   }
 
-  private async callForNewAccessToken(refreshToken: string): Promise<void> {
-    // const tokenHeaders = new HttpHeaders({
-    //   'Content-Type': 'application/x-www-form-urlencoded'
-    // })
+  private async callWithRefreshTokenForNewAccessToken(refreshToken: string): Promise<void> {
+
+    console.log('calling with refresh token for a new access token!', refreshToken)
+
+    const tokenHeaders = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    })
 
     // const body = {
     //   grant_type: 'refresh_token',
@@ -104,18 +161,42 @@ export class TdApiService {
     //   redirect_uri: environment.redirect_uri
     // }
 
-    // return new Promise(resolve => {
-    //   this.http.post<TokenHolder>(tokenEndpoint, qs.stringify(body), { headers: tokenHeaders }).subscribe(async response => {
-    //     console.log('got a refresh response... ', response)
-    //     this.setTokens(null, null, response.access_token, response.expires_in);
+    const body = {
+      grant_type: 'refresh_token',
+      access_type: '',
+      refresh_token: refreshToken,
+      code: '',
+      client_id: environment.td_client + '@AMER.OAUTHAP',
+      redirect_uri: environment.redirect_uri
+    }
 
-    //     await Promise.all([this.refreshPositions(), this.refreshOrders()])
-    //     resolve()
-    //   })
-    // })
+    const ok = qs.stringify(body)
+
+    console.log(ok)
+
+    if (!this.currentlyCallingForNewAccessToken) {
+      this.currentlyCallingForNewAccessToken = true;
+      console.log('calling for new access token...')
+
+      return new Promise(resolve => {
+        this.http.post<TokenHolder>(tokenEndpoint, ok, { headers: tokenHeaders }).subscribe(async response => {
+          console.log('got a refresh response... ', response)
+          this.setTokens(response.access_token, response.expires_in);
+
+          this.refreshData();
+          resolve();
+
+          this.currentlyCallingForNewAccessToken = false
+        }, () => {
+          this.currentlyCallingForNewAccessToken = false
+        })
+      })
+    } else {
+      console.log('already calling for new access token...')
+    }
   }
 
-  private async callForAccessAndRefreshTokens(code: string): Promise<void> {
+  private async callWithCodeForAccessAndRefreshTokens(code: string): Promise<void> {
 
     const tokenHeaders = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -137,7 +218,7 @@ export class TdApiService {
         console.log('got a response... ', response)
         this.setTokens(response.access_token, response.expires_in, response.refresh_token, response.refresh_token_expires_in);
 
-        await Promise.all([this.refreshPositions(), this.refreshOrders()])
+        await this.refreshData()
         resolve()
       })
     })
@@ -145,16 +226,25 @@ export class TdApiService {
 
   private setTokens(accessToken, accessTokenExpirationTime, refreshToken = undefined, refreshTokenExpirationTime = undefined) {
 
+    const now = new Date()
+    console.log('setting tokens, now: ', now)
+
     if (accessToken && accessTokenExpirationTime) {
       localStorage.setItem('a_token', accessToken)
       localStorage.setItem('a_ex_time', accessTokenExpirationTime)
 
-      const accessTokenExpiryDate = new Date()
-      accessTokenExpiryDate.setSeconds(accessTokenExpiryDate.getSeconds() + accessTokenExpirationTime)
+      console.log('accessTokenExpirationTime: ', accessTokenExpirationTime)
+      console.log('now.getTime(): ', now.getTime())
+      const accessTokenExpiryDate = new Date(now.getTime() + accessTokenExpirationTime * 1000)
+
+      // const accessTokenExpiryTime = 
+
+      // accessTokenExpiryDate.setSeconds(accessTokenExpiryDate.getSeconds() + accessTokenExpirationTime)
 
       // localStorage.setItem('a_ex_iso_date', accessTokenExpiryDate.toISOString())
 
       localStorage['a_ex_date'] = '' + accessTokenExpiryDate.getTime();
+      console.log('setting a_ex_date: ', '' + accessTokenExpiryDate.getTime())
 
       this.accessToken = accessToken
       this.accessTokenExpiryDate = accessTokenExpiryDate
@@ -167,11 +257,10 @@ export class TdApiService {
 
       console.log('got refresh time: ', refreshTokenExpirationTime)
 
-      const refreshTokenExpiryDate = new Date()
-      refreshTokenExpiryDate.setSeconds(refreshTokenExpiryDate.getSeconds() + refreshTokenExpirationTime)
+      const refreshTokenExpiryDate = new Date(now.getTime() + refreshTokenExpirationTime * 1000)
 
-      // localStorage.setItem('r_ex_iso_date', refreshTokenExpiryDate.toISOString())
       localStorage['r_ex_date'] = '' + refreshTokenExpiryDate.getTime();
+      console.log('setting r_ex_date: ', '' + refreshTokenExpiryDate.getTime())
 
       this.refreshToken = refreshToken
       this.refreshTokenExpiryDate = refreshTokenExpiryDate
@@ -184,48 +273,75 @@ export class TdApiService {
 
     console.log('refreshing positions...')
 
-    //TODO - check tokens before calling? if access expired, refresh it - if refresh expired, show error popup
+    const tokenStatus = await this.getCurrentTokenStatus();
+    await this.getNewTokensIfNecessary(tokenStatus)
 
-    const connectedToTd = await this.setCallbackCode();
-
-    if (connectedToTd) {
+    if (tokenStatus !== TdTokenStatus.missing_tokens && tokenStatus !== TdTokenStatus.both_tokens_expired) {
 
       const positionsHeaders = new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.accessToken}`
       })
 
-      return new Promise(resolve => {
-        this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe((positions: any) => {
+      if (!this.currentlyCallingForNewAccessToken) {
 
-          console.log('got positions: ', positions);
+        if (this.accessToken) {
 
-          this.positions.next(positions);
-          resolve()
-        })
-      })
+          return new Promise(resolve => {
+            this.http.get(getPositionEndpoint, { headers: positionsHeaders }).subscribe((positions: any) => {
 
-    } else {
-      return
+              console.log('got positions: ', positions);
+
+              this.positions.next(positions);
+              resolve()
+            })
+          })
+        } else {
+          console.log('Error, trying to call with no access token!')
+        }
+      } else {
+        console.log('Currently callingf or access token!')
+      }
     }
   }
 
-  refreshOrders(): Promise<void> {
+  async refreshOrders(): Promise<void> {
 
-    const ordersHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.accessToken}`
-    })
+    console.log('refreshing orders...')
 
-    return new Promise(resolve => {
-      this.http.get(getOrdersEndpoint, { headers: ordersHeaders }).subscribe((orders: any) => {
+    const tokenStatus = await this.getCurrentTokenStatus();
+    await this.getNewTokensIfNecessary(tokenStatus)
 
-        console.log('got orderssss: ', orders)
+    if (tokenStatus !== TdTokenStatus.missing_tokens && tokenStatus !== TdTokenStatus.both_tokens_expired) {
 
-        this.orders.next(orders);
-        resolve()
+      const ordersHeaders = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.accessToken}`
       })
-    })
+
+      if (!this.currentlyCallingForNewAccessToken) {
+
+        if (this.accessToken) {
+          return new Promise(resolve => {
+            this.http.get(getOrdersEndpoint, { headers: ordersHeaders }).subscribe((orders: any) => {
+
+              console.log('got orderssss: ', orders)
+
+              this.orders.next(orders);
+              resolve()
+            })
+          })
+        } else {
+          console.log('Error, trying to call with no access token!')
+        }
+      } else {
+        console.log('Currently callingf or access token!')
+      }
+
+    }
+    else {
+      console.log('can\'t refresh positions! ', tokenStatus)
+    }
   }
 
   async placeHardcodedOrder() {
@@ -254,13 +370,23 @@ export class TdApiService {
       'Authorization': `Bearer ${this.accessToken}`
     })
 
-    try {
-      const placeOrderResult = await this.http.post(placeOrderEndpoint, requestBody, { headers: ordersHeaders })
-      console.log('order placed! ', placeOrderResult)
-    }
-    catch (err) {
-      console.log('err placing order! ', err)
+    if (!this.currentlyCallingForNewAccessToken) {
 
+      if (this.accessToken) {
+
+        try {
+          const placeOrderResult = await this.http.post(placeOrderEndpoint, requestBody, { headers: ordersHeaders })
+          console.log('order placed! ', placeOrderResult)
+        }
+        catch (err) {
+          console.log('err placing order! ', err)
+
+        }
+      } else {
+        console.log('Error, trying to call with no access token!')
+      }
+    } else {
+      console.log('Currently callingf or access token!')
     }
 
 

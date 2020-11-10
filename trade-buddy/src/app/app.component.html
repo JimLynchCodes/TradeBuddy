@@ -10,18 +10,18 @@
   <h4><i>Trade Buddy</i></h4>
   <div class="spacer"></div>
 
-  <span class="p-3">{{connectedToText}}</span>
+  <span class="p-3">{{maskedConnectedAccountId}}</span>
 
   <a href="https://auth.tdameritrade.com/oauth?client_id=ESRWAJCTK8NS8D21HNVFXRA42L3XQSVZ%40AMER.OAUTHAP&response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A4200%2Flogin-callback&lang=en-us">
-    <button type="button" class="btn btn-success btn-sm"  *ngIf="connectedToText === defaultNotConnectedToTdText"
+    <button type="button" class="btn btn-success btn-sm"  *ngIf="maskedConnectedAccountId === defaultNotConnectedToTdText"
       tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
       Connect TD Account
     </button>
+  </a>
 
-    <button type="button" class="btn btn-success btn-sm" *ngIf="connectedToText !== defaultNotConnectedToTdText">
+    <button type="button" class="btn btn-success btn-sm" *ngIf="maskedConnectedAccountId !== defaultNotConnectedToTdText" (click)="logoutClicked()">
       Logout
     </button>
-  </a>
 
 </div>
 

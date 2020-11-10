@@ -6,11 +6,11 @@
 </div>
 <div class="modal-body">
 
-    <p>Please confirm that you would like to place this order!</p>
+    <p>Clicking "Place Trade!" will place an order in your account to open this position.</p>
 
     <p>
         Asset: {{ position?.orderLegCollection[0].instrument.symbol }}
-        {{position | json}}
+        <!-- {{position | json}} -->
     </p>
 
     <p>
@@ -18,13 +18,13 @@
     </p>
 
     <p>
-        Current Price: {{ position?.price }}
+        Current Price: ${{ position?.price }}
     </p>
 
-    <hr/>
+    <hr class="text-dark"/>
 
     <p>
-        Total: {{ +position?.quantity * +position?.price}}
+        Total: ${{ +position?.quantity * +position?.price}}
     </p>
 
     <!-- <p>

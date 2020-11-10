@@ -52,41 +52,14 @@
 
     <div class="column px-1">
 
-      <!-- Bot Autonomy -->
+      
 
-      <div class=" p-2 m-1 border border-white rounded">
-        <h5 class="card-text pl-2">Bot Autonomy</h5>
-        <p class="pl-2">
-          Should this bot place trades on its own or make suggestions for your approval?
-        </p>
-
-        <div class="row d-flex pl-5">
-
-          <div class="form-check p-2 flex-grow-1">
-            <input type="radio" class="form-check-input" id="botAutonomyRequireApproval" name="botAutonomyRadio"
-              checked>
-            <label class="form-check-label" for="botAutonomyRequireApprovalRadio">Require Approval</label>
-          </div>
-
-          <div class="form-check p-2 flex-grow-1">
-            <input type="radio" class="form-check-input" id="botAutonomyAutotrade" name="botAutonomyRadio">
-            <label class="form-check-label" for="botAutonomyAutotradeRadio">Autotrade</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bot Autonomy -->
-
+      <!-- Gainslocker -->
       <div class=" p-2 m-1 border border-white rounded">
         <h5 class="card-text pl-2">GainsLocker™</h5>
-        <p class="pl-2">Automatic climbing stop-loss after value has increased by chosen percentage.</p>
-        <!-- <span data-toggle='tooltip' title='<%= @your_tooltip_content %>'>?</span> -->
-
+        <p class="pl-2">Automatic climbing limit order that increases to be at most X percentage lower than the current price.</p>
         <span class="glyphicon glyphicon-phone text-white"> </span>
-
-
         <div class="row d-flex pl-5">
-
           <div class="form-check p-2 flex-grow-1">
             <input type="radio" class="form-check-input" id="gainslockerDontLockGains" name="gainslockerRadio" checked>
             <label class="form-check-label" for="gainslockerDontLockGains">Dont Lock Gains</label>
@@ -109,32 +82,38 @@
 
       <!-- Algos To Use -->
 
-      <div class=" p-2 m-1 border border-white rounded">
+      <div class=" p-2 m-1 mt-2 border border-white rounded">
 
-        <h5 class="card-text pl-2">Algos To Use</h5>
+        <h4 class="card-text pl-2 m-2 text-center ">Enable / Disable Bot Algorithms</h4>
 
-        <div class="row d-flex pl-5 col">
+        <h5 class=p-2>Position Entering Algos</h5>
+  
+        <div class="d-flex pl-5 flex-column">
 
-          <div class="form-check p-2 flex-grow-1">
+          <div class="form-check p-2 flex-grow-1 d-flex flex-row">
             <input type="checkbox" class="form-check-input" id="tripleGainersCheckbox" name="tripleGainersCheckbox"
               checked>
-            <label class="form-check-label" for="tripleGainersCheckbox">Triple Gainers Rating</label>
-          </div>
+            <label class="form-check-label" for="tripleGainersCheckbox"><i>Triple Gainers Hot Buys</i></label>
 
-          <div class="form-check p-2 flex-grow-1">
-            <input type="checkbox" class="form-check-input" id="dailyVolumeCheckbox" name="dailyVolumeCheckbox" checked>
-            <label class="form-check-label" for="dailyVolumeCheckbox">Daily Volume Spikes</label>
+            <p>&nbsp;- buys <i>"triple gainer"</i> stocks with analyst buy rating at least 80% and previous day volume over 20d average volume is at least 200%+ </p>
           </div>
-
+          
           <div class="form-check p-2 flex-grow-1">
             <input type="checkbox" class="form-check-input" id="morningVolumeSpikes" name="morningVolumeSpikes" checked>
-            <label class="form-check-label" for="morningVolumeSpikes">Morning Volume Spikes</label>
+            <label class="form-check-label" for="morningVolumeSpikes">Head & Shoulders Bottom</label>
+            
+            <p>&nbsp;- buys stocks that have just broken the neckline while in a "head & shoulders formation". Alerts for stocks that have rounded out the second shoulder and are approaching the neckline.</p>
           </div>
 
-          <div class="form-check p-2 flex-grow-1">
+          <!-- <div class="form-check p-2 flex-grow-1">
+            <input type="checkbox" class="form-check-input" id="morningVolumeSpikes" name="morningVolumeSpikes" checked>
+            <label class="form-check-label" for="morningVolumeSpikes">Morning Volume Spikes</label>
+          </div> -->
+
+          <!-- <div class="form-check p-2 flex-grow-1">
             <input type="checkbox" class="form-check-input" id="dailyVolumeSpikes" name="dailyVolumeSpikes" checked>
             <label class="form-check-label" for="dailyVolumeSpikes">Put Putter 3000</label>
-          </div>
+          </div> -->
 
         </div>
 

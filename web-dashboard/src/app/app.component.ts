@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TdApiService } from './services/td-api.service';
+import { io } from 'socket.io-client';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent {
   constructor(private http: HttpClient, private tdApiSvc: TdApiService) { }
 
   title = 'trade-buddy';
-  
+
   defaultNotConnectedToTdText = '[No account connected]'
   maskedConnectedAccountId = this.defaultNotConnectedToTdText;
 
@@ -28,6 +29,13 @@ export class AppComponent {
     this.tdApiSvc.positions.subscribe(data => {
       this.maskedConnectedAccountId = this.hideFullStringWithAsertisks(data[0]?.securitiesAccount.accountId)
     })
+
+    const socket = io('https://localhost:3001',
+      {
+        reconnectionDelayMax: 10000
+      })
+    
+    socket.on('connection', data => console.log)
   }
 
   private hideFullStringWithAsertisks(input: string): string {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { StocksController } from './stocks.controller';
+import { StocksSocketGateway } from './stocks.controller';
 
 @Module({
-  providers: [StocksController],
+  providers: [StocksSocketGateway],
 })
 export class StocksModule {}

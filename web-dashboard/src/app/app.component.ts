@@ -24,18 +24,31 @@ export class AppComponent {
   async ngOnInit() {
 
     console.log('App Component starting up!')
+    
+
+    console.log('@# starting up socket!')
+    var socket = io('https://localhost:3002', {secure: true});
+    socket.on('connect', function () {
+
+        console.log('@# connected!')
+
+        socket.emit('foo', 'bar')
+        
+    });
+    socket.on('events', function (data) { 
+        console.log('@# received message!', data)
+
+    });
+    socket.on('disconnect', function () { 
+        console.log('@# disconnected from server!')
+    });
+
     await this.tdApiSvc.init()
 
     this.tdApiSvc.positions.subscribe(data => {
       this.maskedConnectedAccountId = this.hideFullStringWithAsertisks(data[0]?.securitiesAccount.accountId)
     })
 
-    const socket = io('https://localhost:3001',
-      {
-        reconnectionDelayMax: 10000
-      })
-    
-    socket.on('connection', data => console.log)
   }
 
   private hideFullStringWithAsertisks(input: string): string {

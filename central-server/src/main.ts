@@ -30,30 +30,98 @@
 // bootstrap();
 
 import 'dotenv/config';
-import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { NestApplication, NestFactory } from '@nestjs/core';
+import { HttpServer, Logger } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 import * as fs from 'fs';
+import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
+const express = require('express')
+
 
 const port = process.env.PORT || 3002;
 
 async function bootstrap() {
 
-  const httpsOptions = {
-    key: fs.readFileSync('ssl-keys/localhost+3-key.pem'),
-    cert: fs.readFileSync('ssl-keys/localhost+3.pem'),
-  };
+  // const httpsOptions = {
+  //   key: fs.readFileSync('ssl-keys/localhost+3-key.pem'),
+  //   cert: fs.readFileSync('ssl-keys/localhost+3.pem'),
+  //   origin: ['https://localhost:4200','http://localhost:4200'],
+  //   cors: {
+  //     origin: ['https://myapp.com'],
+  //     methods: ['GET', 'PUT', 'POST', 'DELETE'],
+  //     allowedHeaders: ['Content-Type', 'Authorization'],
+  //     exposedHeaders: ['Authorization'],
+  //     credentials: true
+  //   }
+  // };
 
-  const app = await NestFactory.create(AppModule, { httpsOptions });
-  app.enableCors({
-    origin: [
-      'http://localhost:4200', // angular
-      'http://localhost:3000', // react
-      'http://localhost:8081', // react-native
-    ],
+
+  // const httpsOptions = {
+  //   key: key,
+  //   cert: cert,
+  //   ca: ca
+  // };
+  // const expressInstance = express();
+  // const app: NestApplication = await NestFactory.create(
+  //   AppModule,
+  //   { httpsOptions }
+  // );
+  // await app.listen(port);
+
+  // const expressApp = express()
+  // const app = await NestFactory.create(AppModule, expressApp, 
+  //   { httpsOptions }
+  // {
+  // cors: {
+  //   origin: ['https://localhost:4200'],
+  //   methods: ['GET', 'PUT', 'POST', 'DELETE'],
+  //   allowedHeaders: ['Content-Type', 'Authorization'],
+  //   exposedHeaders: ['Authorization'],
+  //   credentials: true
+  // }
+  // )
+
+  // app.enableCors({
+  //   origin: [
+  //     'http://localhost:4200', // angular
+  //     'http://localhost:3000', // react
+  //     'http://localhost:8081', // react-native
+  //   ],
+  // });
+
+  // const app = await NestFactory.create(AppModule)
+
+  // await app.listen(port);
+  // Logger.log(`Server running on https://localhost:${port}`, 'Bootstrap');
+
+  // const expressApp = new HttpServer();
+  let httpsOptions: HttpsOptions
+  // if (process.env.ENV !== 'dev') {
+    // httpsOptions = {
+    // };
+    // }
+    const app = await NestFactory.create(AppModule
+    , {
+      // cors: true,
+      cors: {
+        origin: 'https://localhost:3002',
+        methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        exposedHeaders: ['Authorization'],
+        credentials: true,
+      },
+      httpsOptions: {
+        key: fs.readFileSync('ssl-keys/localhost+3-key.pem'),
+        cert: fs.readFileSync('ssl-keys/localhost+3.pem'),
+        rejectUnauthorized: false
+    }
   });
+  
   await app.listen(port);
-  Logger.log(`Server running on https://localhost:${port}`, 'Bootstrap');
+
+
 }
 bootstrap();
+
+

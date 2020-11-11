@@ -14,24 +14,57 @@ import { Server } from 'socket.io';
 import { Logger, Controller, Headers, Header } from '@nestjs/common';
 import { Socket } from 'net';
 
+const interval = 3_000
+
 // @Header('Access-Control-Allow-Origin', '*')
 @Controller()
-@WebSocketGateway(3001, { transport: ['websocket'], origins: ['https://localhost:4200'] })
+@WebSocketGateway({ transport: ['websocket'], origin : "*:*", secure: true })
+// @WebSocketGateway(3003, { transport: ['websocket'], origin : "*:*"})
 export class StocksSocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
   @WebSocketServer()
   wss;
+
+  stockWatcherRunning = false
+
+  connections: any[] = []
   
   private logger = new Logger('AppGateway');
   
-  @Header('Access-Control-Allow-Origin', '*')
+  // @Header('Access-Control-Allow-Origin', '*')
   handleConnection(client) {
     this.logger.log('New client connected');
     client.emit('connection', 'Successfully connected to server');
 
     client.emit('events', { name: 'Nest' });
+    console.log('emitting stuff...')
+
+    if (this.connections.length === 0) {
+      this.startStockWatcher()
+    }
+    this.connections.push(client)
+  }
+
+  startStockWatcher() {
+    if (!this.stockWatcherRunning) {
+      this.stockWatcherRunning = true
+
+      setInterval(() => {
+
+
+        const randomNum = Math.random() * 10_000
+
+        console.log('making api call to iex cloud...')
+
+        console.log('blasting out updates!')
+
+        this.connections.forEach( client => client.emit('events', randomNum))
+
+      }, interval)
+
+    }
   }
 
   handleDisconnect(client) {

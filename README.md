@@ -1,7 +1,7 @@
 # TradeBuddy
 
 
-## <b>The webapp that makes ANYONE a profitable day trader!!</b>
+## <i><b>The webapp that makes ANYONE a profitable day trader!!</b></i>
 
 
 ### How it works

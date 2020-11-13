@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { StocksSocketGateway } from './stocks.controller';
+import { StocksSocketGateway } from './stocks.gateway';
 
 @Module({
   providers: [StocksSocketGateway],

@@ -21,7 +21,6 @@ export class AppController {
     return of('foo')
   }
   
-  
   @Get('beh-sub')
   getBehSub(): BehaviorSubject<string> {
     return new BehaviorSubject('foo')

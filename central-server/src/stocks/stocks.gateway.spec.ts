@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { StocksSocketGateway } from './stocks.controller';
+import { StocksSocketGateway } from './stocks.gateway';
 
 describe('StocksSocketGateway', () => {
   let controller: StocksSocketGateway;

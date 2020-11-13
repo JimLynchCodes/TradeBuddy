@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TdApiService } from './services/td-api.service';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 
 @Component({
   selector: 'app-root',
@@ -22,32 +22,50 @@ export class AppComponent {
   access_token = 'ok'
 
   async ngOnInit() {
-
     console.log('App Component starting up!')
-    
 
-    console.log('@# starting up socket!')
-    var socket = io('https://localhost:3002', {secure: true});
+    var socket = io('https://localhost:3002');
+
     socket.on('connect', function () {
+      console.log('connected!')
 
-        console.log('@# connected!')
-
-        socket.emit('foo', 'bar')
-        
-    });
-    socket.on('events', function (data) { 
-        console.log('@# received message!', data)
-
-    });
-    socket.on('disconnect', function () { 
-        console.log('@# disconnected from server!')
+      socket.emit('set_symbols_to_watch', { userId: '123', symbols: ['MSFT', 'GOOG', 'FOO']})
     });
 
-    await this.tdApiSvc.init()
+    socket.on('new_data_for_watched_symbols', function (data) {
+      console.log('received message!', data)
 
-    this.tdApiSvc.positions.subscribe(data => {
-      this.maskedConnectedAccountId = this.hideFullStringWithAsertisks(data[0]?.securitiesAccount.accountId)
-    })
+    });
+    socket.on('events', function (data) {
+      console.log('received message!', data)
+
+    });
+    socket.on('disconnect', function () {
+      console.log('disconnected from server!')
+    });
+
+    // console.log('@# starting up socket!')
+    // var socket = io('https://localhost:3002');
+    // socket.on('connect', function () {
+
+    //     console.log('@# connected!')
+
+    //     socket.emit('foo', 'bar')
+
+    // });
+    // socket.on('events', function (data) { 
+    //     console.log('@# received message!', data)
+
+    // });
+    // socket.on('disconnect', function () { 
+    //     console.log('@# disconnected from server!')
+    // });
+
+    // await this.tdApiSvc.init()
+
+    // this.tdApiSvc.positions.subscribe(data => {
+    //   this.maskedConnectedAccountId = this.hideFullStringWithAsertisks(data[0]?.securitiesAccount.accountId)
+    // })
 
   }
 

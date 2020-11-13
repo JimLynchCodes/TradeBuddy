@@ -1,7 +1,9 @@
-# TradeBuddy
+# Trade Buddy
 
 
-## <i><b>The webapp that makes ANYONE a profitable day trader!!</b></i>
+### <i><b>The webapp that makes ANYONE a profitable day trader!!</b></i>
+
+<hr/>
 
 
 ### How it works
@@ -13,6 +15,8 @@
 - Runs data through stock (and potentially your own custom) algorithms which generate order suggestions.
 
 - Combines technical price & volume change data with news & fundamentals for the most complete picture. 
+
+<hr/>
 
 ### What's Here
 

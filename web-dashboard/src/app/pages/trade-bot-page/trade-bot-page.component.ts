@@ -1,8 +1,8 @@
 
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TdApiService } from '../../services/td-api.service';
-import { ToastManagerService } from '../../services/toast-manager.service';
+import { TdApiService } from '../../services/td-api/td-api.service';
+import { ToastManagerService } from '../../services/toast-manager/toast-manager.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { EnableGainslockerModalService } from '../../components/modals/enable-gainslock-confirm/enable-gainslock-modal.service';
 import { AskCancelOrderModalService } from '../../components/modals/ask-cancel-order/ask-cancel-order-modal.service';

@@ -1,9 +1,6 @@
 # TradeBuddy
 The frontend Angular web-app piece of the overall Trade Buddy platform.
 
-
-
-
 ## Dev Setup
 
 ### Setup Local HTTPS Cert

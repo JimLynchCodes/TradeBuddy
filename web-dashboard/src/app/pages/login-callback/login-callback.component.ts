@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TdApiService } from 'src/app/services/td-api.service';
+import { TdApiService } from '../../services/td-api/td-api.service';
 
 @Component({
   selector: 'app-login-callback',

@@ -215,7 +215,7 @@ export class TdApiService {
 
     return new Promise(resolve => {
       this.http.post<TokenHolder>(tokenEndpoint, qs.stringify(body), { headers: tokenHeaders }).subscribe(async response => {
-        console.log('got a response... ', response)
+        // console.log('got a response... ', response)
         this.setTokens(response.access_token, response.expires_in, response.refresh_token, response.refresh_token_expires_in);
 
         await this.refreshData()

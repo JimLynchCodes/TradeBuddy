@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { GainslockerService } from 'src/app/services/gainslocker.service';
+import { GainslockerService } from '../../../services/gainslocker/gainslocker.service';
 
 @Component({
   selector: 'app-enable-gainslock-confirm',

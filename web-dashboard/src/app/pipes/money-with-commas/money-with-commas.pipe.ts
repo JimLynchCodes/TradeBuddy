@@ -12,7 +12,6 @@ export class MoneyWithCommasPipe implements PipeTransform {
     else
       value = '$' + value
 
-    console.log('original value: ', value)
     const dotIndex = value.indexOf('.')
 
     const decimalPiece = dotIndex > 0 ? value.substr(dotIndex + 1) : ''

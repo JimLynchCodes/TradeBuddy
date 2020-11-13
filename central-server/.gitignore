@@ -34,3 +34,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 ssl-keys/
+
+# Add example .env but no others
+.env.*

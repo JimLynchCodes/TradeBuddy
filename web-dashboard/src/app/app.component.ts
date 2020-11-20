@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TdApiService } from './services/td-api/td-api.service';
-import { SocketServerService } from './socket-server.service';
+import io from 'socket.io-client';
+import { environment } from 'src/environments/environment';
+import { StockDataSocketService } from './services/stock-data-socket/stock-data-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +14,9 @@ import { SocketServerService } from './socket-server.service';
 export class AppComponent {
   accountNumber: string;
 
-  constructor(private http: HttpClient, private tdApiSvc: TdApiService, private socketServerSvc: SocketServerService) { }
+  constructor(private http: HttpClient,
+    private tdApiSvc: TdApiService,
+    private stockDataSocketSvc: StockDataSocketService) { }
 
   title = 'trade-buddy';
 
@@ -22,7 +26,18 @@ export class AppComponent {
   access_token = 'ok'
 
   async ngOnInit() {
-    // this.socketServerSvc.startSocket()
+    console.log('App Component starting up!')
+
+    this.stockDataSocketSvc.socket.on('connect', function () {
+      console.log('app component see that it\'s connected!')
+
+      const symbolsToWatch = ['MSFT', 'GOOG']
+
+      const symbolsCsvString = symbolsToWatch.join(',')
+
+      this.stockDataSocketSvc.socket.emit('set_symbols_to_watch', symbolsCsvString)
+    });
+
   }
 
   private hideFullStringWithAsertisks(input: string): string {

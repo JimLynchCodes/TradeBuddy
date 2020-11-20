@@ -140,10 +140,6 @@ export class TradeBotPageComponent {
     console.log('undoing last action...');
   }
 
-  // private refreshAccessTokenIfNecessary() {
-
-  // }
-
   ngOnInit() {
     // this.refreshAccessTokenIfNecessary();
 
@@ -336,7 +332,7 @@ export class TradeBotPageComponent {
           console.log('placing trade! ', placeOrderModalResponse)
 
         } else {
-          console.log('unrecognized answer from palce order modal... ', placeOrderModalResponse.answer)
+          console.log('unrecognized answer from place order modal... ', placeOrderModalResponse.answer)
         }
 
         // if (placeOrderModalResponse.answer.place === placeOrderOptions.place_order) {
@@ -398,15 +394,12 @@ export class TradeBotPageComponent {
   }
 
   cancelEnableGainsLockerMode() {
-
   }
 
   enableGainsLockerSelectionChange() {
-
   }
 
   enableGainsLockerSubmit() {
-
   }
 
   cancelOrderClick(order, index) {

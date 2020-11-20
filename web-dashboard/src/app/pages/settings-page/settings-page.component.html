@@ -1,5 +1,29 @@
 <div class="text-align-left flex-grow-1 mb-2 p-4">
 
+
+  <h2>Watchlist</h2>
+
+  <!-- <p>Watchlist is currently being saved to <i>local storage {{watchlistStorageMode}}.</i></p> -->
+
+  <!-- // todo - add symbols in watchlist -->
+
+  <div class="input-group mb-3">
+    <div class="input-group-prepend ml-4">
+      <span class="input-group-text" id="basic-addon3">Add Symbol</span>
+    </div>
+
+    <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3"
+      (keyup.enter)="connectWithAccessTokenClick()">
+
+    <!-- // todo - add search results from input -->
+
+    <!-- <button type="button" class="btn btn-success btn-sm mr-4" (click)="connectWithAccessTokenClick()"
+      tooltip="Uses a secure OAuth connected to link your account. Connection is killed when you close your browser window (and times out after 30 min).">
+      Add
+    </button> -->
+
+  </div>
+
   <p>
     First, get an auth code by using the secure login from the green button above. ^
     <br />
@@ -31,7 +55,7 @@
     <span class="input-group-text" id="basic-addon3">access_token</span>
   </div>
 
-  <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3" [(ngModel)]="access_token"
+  <input type="text" class="form-control mr-2" id="basic-url" aria-describedby="basic-addon3" 
     (keyup.enter)="connectWithAccessTokenClick()">
 
   <button type="button" class="btn btn-success btn-sm mr-4" (click)="connectWithAccessTokenClick()"
@@ -52,12 +76,13 @@
 
     <div class="column px-1">
 
-      
+
 
       <!-- Gainslocker -->
       <div class=" p-2 m-1 border border-white rounded">
         <h5 class="card-text pl-2">GainsLocker™</h5>
-        <p class="pl-2">Automatic climbing limit order that increases to be at most X percentage lower than the current price.</p>
+        <p class="pl-2">Automatic climbing limit order that increases to be at most X percentage lower than the current
+          price.</p>
         <span class="glyphicon glyphicon-phone text-white"> </span>
         <div class="row d-flex pl-5">
           <div class="form-check p-2 flex-grow-1">
@@ -67,7 +92,7 @@
 
           <div class="form-check p-2 flex-grow-1">
             <input type="radio" class="form-check-input" id="gainslockerLockGainsAt" name="gainslockerRadio">
-            <label class="form-check-label" for="gainslockerLockGainsAtRadio">GainsLock at:</label>
+            <!-- <label class="form-check-label" for="gainslockerLockGainsAtRadio">GainsLock at:</label> -->
 
             <select class="selectpicker rounded ml-2">
               <option>2%</option>
@@ -87,7 +112,7 @@
         <h4 class="card-text pl-2 m-2 text-center ">Enable / Disable Bot Algorithms</h4>
 
         <h5 class=p-2>Position Entering Algos</h5>
-  
+
         <div class="d-flex pl-5 flex-column">
 
           <div class="form-check p-2 flex-grow-1 d-flex flex-row">
@@ -95,14 +120,16 @@
               checked>
             <label class="form-check-label" for="tripleGainersCheckbox"><i>Triple Gainers Hot Buys</i></label>
 
-            <p>&nbsp;- buys <i>"triple gainer"</i> stocks with analyst buy rating at least 80% and previous day volume over 20d average volume is at least 200%+ </p>
+            <p>&nbsp;- buys <i>"triple gainer"</i> stocks with analyst buy rating at least 80% and previous day volume
+              over 20d average volume is at least 200%+ </p>
           </div>
-          
+
           <div class="form-check p-2 flex-grow-1">
             <input type="checkbox" class="form-check-input" id="morningVolumeSpikes" name="morningVolumeSpikes" checked>
             <label class="form-check-label" for="morningVolumeSpikes">Head & Shoulders Bottom</label>
-            
-            <p>&nbsp;- buys stocks that have just broken the neckline while in a "head & shoulders formation". Alerts for stocks that have rounded out the second shoulder and are approaching the neckline.</p>
+
+            <p>&nbsp;- buys stocks that have just broken the neckline while in a "head & shoulders formation". Alerts
+              for stocks that have rounded out the second shoulder and are approaching the neckline.</p>
           </div>
 
           <!-- <div class="form-check p-2 flex-grow-1">
@@ -126,13 +153,13 @@
     </div>
   </div>
 
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-  <br/>
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
 </div>

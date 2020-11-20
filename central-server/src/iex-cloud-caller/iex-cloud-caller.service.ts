@@ -18,6 +18,32 @@ export class IexCloudCallerService {
 
   // globalStocksWatchlist = new Set()
 
+  checkSymbol(symbol: string): Promise<any> {
+    return new Promise(resolve => {
+
+      console.log('size is...', Object.keys(this.socketToWatchlistMap).length)
+
+      if (Object.keys(this.socketToWatchlistMap).length === 0)
+        return resolve()
+
+      console.log('calling out for stock data!')
+
+      const fullStocksList = this.getFullSetOfStocksCsvString()
+
+      console.log('fullStocksList: ', fullStocksList)
+      console.log('socketToWatchlistMap: ', this.socketToWatchlistMap)
+
+      this.http.get(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${this.getFullSetOfStocksCsvString()}` +
+        `&types=quote,news,logo&range=1w&last=10&token=${process.env.IEX_PUBLISHABLE}`)
+        .pipe(map(res => res.data))
+        .subscribe(rawData => {
+
+          console.log('got a response for stock data: ', rawData)
+
+        })
+      })
+  }
+
   getStockData() {
 
     const randomNum = Math.random() * 10_000

@@ -2,6 +2,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
+import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
+import { ServerCallerService } from '../../good-services/central-server-caller/central-server-caller.service'
 
 const fakeBuyOrder1 = {
   quantity: 1,
@@ -105,12 +108,17 @@ export class SettingsPageComponent {
   @ViewChild('undoToast') undoToast;
   @ViewChild('undoi') undi;
 
-  constructor(private http: HttpClient) { }
+  newTitle: string;
+  @ViewChild('input') input;
+
+  constructor(private http: HttpClient, private serverCaller: ServerCallerService) { }
 
   title = 'trade-buddy';
   connectedToText = '[No account connected]';
 
   access_token = 'ok'
+  
+  symbolToAdd = ''
 
   currentCash = '$10,234'
 
@@ -143,8 +151,6 @@ export class SettingsPageComponent {
 
   undoClicked(): void {
     console.log('undoing last action...');
-
-
   }
 
   onClosed(dismissedAlert: AlertComponent): void {
@@ -158,8 +164,6 @@ export class SettingsPageComponent {
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedBuyOrders.push(fakeBuyOrder1)
     this.suggestedSellOrders.push(fakeSellOrder1)
-
-    // this.undoToast.show()
 
     const minTime = 10200
 
@@ -175,11 +179,31 @@ export class SettingsPageComponent {
 
   }
 
+  subscription: Subscription;
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   ngAfterViewInit() {
     console.log('toast ', this.undoToast)
     console.log('toast ', this.undi)
 
-    // this.undoToast.toast.show()
+    this.subscription = this.input.valueChanges.pipe(
+      skip(1), // skip initial value
+      distinctUntilChanged(),
+      debounceTime(1000)
+    ).subscribe((value) => this.rename(value));
+
+  }
+
+  rename(value): void {
+
+    console.log('value ', value)
+
+    this.serverCaller.checkSymbol(value);
+
+    // this.renameRequest.emit(value);
+
   }
 
   connectWithAccessTokenClick() {

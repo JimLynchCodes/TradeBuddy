@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Logger, Controller, Header } from '@nestjs/common';
-import { IexCloudCallerService } from 'src/iex-cloud-caller/iex-cloud-caller.service';
+import { IexCloudCallerService } from '../iex-cloud-caller/iex-cloud-caller.service';
 
 const interval = 3_000
 

@@ -143,8 +143,6 @@ export class SettingsPageComponent {
 
   undoClicked(): void {
     console.log('undoing last action...');
-
-
   }
 
   onClosed(dismissedAlert: AlertComponent): void {
@@ -181,61 +179,7 @@ export class SettingsPageComponent {
 
     // this.undoToast.toast.show()
   }
-
-  connectWithAccessTokenClick() {
-
-    console.log('trying to connect with: ', this.access_token)
-
-    this.callForPortfolioValues()
-
-  }
-
-  private callForPortfolioValues() {
-
-    const positionEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=positions'
-    const getOrdersEndpoint = 'https://api.tdameritrade.com/v1/accounts?fields=orders'
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.access_token}`
-    })
-
-    // this.http.get(positionEndpoint, { headers: headers }).subscribe(data => {
-
-    //   console.log('got positions data', data)
-
-    //   this.connectedToText = this.hideFullStringWithAsertisks(data[0].securitiesAccount.accountId)
-
-    //   this.portfolioTotalCash = '$' + data[0].securitiesAccount.currentBalances.cashAvailableForTrading
-    //   this.portfolioLongAssetsValue = '$' + data[0].securitiesAccount.currentBalances.longMarketValue
-
-    //   this.portfolioLongOptionsValue = '$' + data[0].securitiesAccount.currentBalances.longOptionMarketValue
-    //   this.portfolioShortOptionsValue = '$' + data[0].securitiesAccount.currentBalances.shortOptionMarketValue
-    //   this.portfolioTotalValue = '$' + data[0].securitiesAccount.currentBalances.liquidationValue
-
-    //   // sort by market value
-    //   this.currentEquityPositions = data[0].securitiesAccount.positions.sort((a, b) => +b.marketValue - +a.marketValue)
-
-    // }, err => {
-    //   console.log('err: ', err)
-    // }, () => {
-    //   console.log('completed: ')
-    // })
-
-    // this.http.get(getOrdersEndpoint, { headers: headers }).subscribe(data => {
-
-    //   console.log('got orders data', data)
-
-    //   this.currentOrders = data[0].securitiesAccount.orderStrategies
-
-    // }, err => {
-    //   console.log('err: ', err)
-    // }, () => {
-    //   console.log('completed: ')
-    // })
-
-  }
-
+  
   private hideFullStringWithAsertisks(input: string): string {
 
     return input.substr(0, 1) + '*****' + input.substr(input.length - 3, 3)
